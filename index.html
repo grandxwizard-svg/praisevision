@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PraiseVision â Visual Training Tools by PraiseJug's Ware</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --cyan:#06b6d4;--cyan2:#22d3ee;--blue:#1d4ed8;--dark:#020917;
+    --glass:rgba(6,182,212,.07);--border:rgba(6,182,212,.2);
+    --text:#e2e8f0;--muted:#94a3b8;
+  }
+  html{scroll-behavior:smooth}
+  body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+
+  /* ââ Canvas ââ */
+  #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+  /* ââ Nav ââ */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;justify-content:space-between;align-items:center;background:rgba(2,9,23,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+  .nav-brand{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--cyan);text-transform:uppercase}
+  .nav-brand span{color:var(--text)}
+  .nav-cta{background:linear-gradient(135deg,var(--cyan),var(--blue));border:none;color:#fff;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 24px;border-radius:6px;cursor:pointer;transition:all .2s;text-transform:uppercase}
+  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(6,182,212,.4)}
+
+  /* ââ Hero ââ */
+  .hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px}
+  .hero-inner{max-width:860px}
+  .hero-badge{display:inline-block;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.3);color:var(--cyan2);font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;padding:6px 18px;border-radius:20px;margin-bottom:28px;text-transform:uppercase}
+  .hero h1{font-family:'Orbitron',monospace;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
+  .hero h1 .accent{background:linear-gradient(135deg,var(--cyan),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero p{font-size:1.15rem;color:var(--muted);max-width:580px;margin:0 auto 48px;line-height:1.75}
+  .hero-price{display:inline-flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:40px}
+  .price-tag{font-family:'Orbitron',monospace;font-size:3.5rem;font-weight:900;color:#fff;line-height:1}
+  .price-tag span{font-size:1.8rem;vertical-align:super;color:var(--cyan)}
+  .price-label{font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+  .hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;border-radius:8px;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;border:none;text-decoration:none}
+  .btn-primary{background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff;box-shadow:0 0 30px rgba(6,182,212,.3)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(6,182,212,.5)}
+  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+  .btn-outline:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,182,212,.05)}
+
+  /* ââ Eye SVG Hero Visual ââ */
+  .hero-visual{position:relative;margin:60px auto 0;max-width:520px}
+  .eye-ring{animation:rotRing 12s linear infinite}
+  .eye-pulse{animation:eyePulse 2.4s ease-in-out infinite}
+  .scan-beam{animation:scanBeam 3s ease-in-out infinite}
+  @keyframes rotRing{from{transform-origin:220px 100px;transform:rotate(0deg)}to{transform-origin:220px 100px;transform:rotate(360deg)}}
+  @keyframes eyePulse{0%,100%{opacity:.7}50%{opacity:1}}
+  @keyframes scanBeam{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(30px);opacity:1}}
+
+  /* ââ Stats Row ââ */
+  .stats{position:relative;z-index:1;display:flex;gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .stat{flex:1;padding:36px 24px;text-align:center;background:var(--dark)}
+  .stat-num{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--cyan);display:block}
+  .stat-lbl{font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:6px;display:block}
+
+  /* ââ Sections ââ */
+  section{position:relative;z-index:1;padding:100px 40px}
+  .container{max-width:1100px;margin:0 auto}
+  .section-label{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:4px;color:var(--cyan);text-transform:uppercase;margin-bottom:16px}
+  .section-title{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;line-height:1.2;margin-bottom:20px}
+  .section-title .accent{background:linear-gradient(135deg,var(--cyan),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .section-sub{color:var(--muted);max-width:520px;line-height:1.75;margin-bottom:60px}
+
+  /* ââ Features Grid ââ */
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+  .feature-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all .3s;position:relative;overflow:hidden}
+  .feature-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,182,212,.05),transparent);opacity:0;transition:opacity .3s}
+  .feature-card:hover::before{opacity:1}
+  .feature-card:hover{border-color:rgba(6,182,212,.4);transform:translateY(-4px);box-shadow:0 20px 60px rgba(6,182,212,.1)}
+  .feature-icon{width:52px;height:52px;border-radius:12px;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+  .feature-name{font-family:'Orbitron',monospace;font-size:.85rem;font-weight:700;letter-spacing:1px;color:#fff;margin-bottom:10px}
+  .feature-desc{font-size:.88rem;color:var(--muted);line-height:1.65}
+
+  /* ââ How it works ââ */
+  .steps{display:flex;flex-direction:column;gap:0}
+  .step{display:grid;grid-template-columns:60px 1fr;gap:32px;padding:40px 0;border-bottom:1px solid rgba(6,182,212,.1);align-items:start}
+  .step:last-child{border-bottom:none}
+  .step-num{font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:rgba(6,182,212,.2);line-height:1}
+  .step-content h3{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:#fff;margin-bottom:10px;letter-spacing:.5px}
+  .step-content p{color:var(--muted);line-height:1.7;font-size:.9rem}
+
+  /* ââ Testimonials ââ */
+  .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+  .tcard{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:28px}
+  .tcard-stars{color:var(--cyan);font-size:1.1rem;margin-bottom:14px;letter-spacing:2px}
+  .tcard-text{font-size:.9rem;color:var(--text);line-height:1.7;margin-bottom:20px;font-style:italic}
+  .tcard-author{display:flex;align-items:center;gap:12px}
+  .tcard-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--blue));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;color:#fff}
+  .tcard-name{font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;color:#fff;letter-spacing:.5px}
+  .tcard-sub{font-size:.72rem;color:var(--muted)}
+
+  /* ââ CTA Section ââ */
+  .cta-section{text-align:center;background:linear-gradient(135deg,rgba(6,182,212,.06),rgba(29,78,216,.06));border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .cta-section .section-title{margin-bottom:16px}
+  .cta-section .section-sub{margin:0 auto 48px}
+  .cta-price-box{display:inline-flex;align-items:center;gap:24px;background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.25);border-radius:16px;padding:24px 48px;margin-bottom:40px}
+  .cta-price-label{font-size:.8rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+  .cta-price-amount{font-family:'Orbitron',monospace;font-size:3rem;font-weight:900;color:#fff}
+  .cta-price-amount sup{font-size:1.4rem;color:var(--cyan);vertical-align:super}
+  .cta-price-note{font-size:.75rem;color:var(--cyan);text-transform:uppercase;letter-spacing:2px}
+  .cta-features{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:48px}
+  .cta-feat{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
+  .cta-feat::before{content:'â';color:var(--cyan);font-weight:700}
+
+  /* ââ Purchase Modal ââ */
+  .modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(2,9,23,.9);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center}
+  .modal-overlay.open{display:flex}
+  .modal{background:#0a1628;border:1px solid rgba(6,182,212,.3);border-radius:20px;padding:48px;max-width:460px;width:90%;box-shadow:0 0 80px rgba(6,182,212,.15);animation:modalIn .3s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .modal-title{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:8px}
+  .modal-sub{font-size:.85rem;color:var(--muted);margin-bottom:32px;line-height:1.6}
+  .modal-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:32px}
+  .modal-price{font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:var(--cyan)}
+  .modal-price-label{font-size:.8rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+  .form-group{margin-bottom:20px}
+  .form-label{display:block;font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+  .form-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:12px 16px;color:#fff;font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:border .2s}
+  .form-input:focus{border-color:var(--cyan);background:rgba(6,182,212,.06)}
+  .form-input::placeholder{color:rgba(148,163,184,.4)}
+  .modal-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--cyan),var(--blue));border:none;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;margin-top:8px}
+  .modal-btn:hover{box-shadow:0 0 40px rgba(6,182,212,.4);transform:translateY(-1px)}
+  .modal-close{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;padding:4px}
+  .modal-close:hover{color:#fff}
+  .modal-wrap{position:relative}
+  .secure-note{text-align:center;font-size:.72rem;color:var(--muted);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:6px}
+  .secure-note::before{content:'ð'}
+
+  /* ââ Success Screen ââ */
+  .success-screen{display:none;text-align:center;padding:20px 0}
+  .success-screen.show{display:block}
+  .success-icon{font-size:4rem;margin-bottom:20px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+  .success-title{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--cyan);margin-bottom:12px}
+  .success-msg{color:var(--muted);font-size:.9rem;line-height:1.65}
+
+  /* ââ Footer ââ */
+  footer{position:relative;z-index:1;padding:48px 40px;border-top:1px solid var(--border);text-align:center}
+  .footer-brand{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
+  .footer-text{font-size:.8rem;color:var(--muted)}
+  .footer-link{color:var(--cyan);text-decoration:none}
+  .footer-link:hover{text-decoration:underline}
+
+  /* ââ Live indicator ââ */
+  .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);margin-right:6px;animation:blink 1.4s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+  @media(max-width:640px){
+    nav{padding:16px 20px}
+    section{padding:70px 20px}
+    .stats{flex-wrap:wrap}
+    .stat{min-width:50%;border:1px solid var(--border)}
+    .cta-price-box{flex-direction:column;gap:8px;padding:24px 32px}
+    .step{grid-template-columns:40px 1fr;gap:16px}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">PraiseJug's Ware &nbsp;/&nbsp; <span>PraiseVision</span></div>
+  <button class="nav-cta" onclick="openModal()">Get PraiseVision â $6</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="live-dot"></span>Visual Training Active</div>
+    <h1>See The <span class="accent">Game</span><br>Before It Happens</h1>
+    <p>PraiseVision sharpens your in-game perception so you anticipate enemy edits, track movement, and lock your crosshair before the fight even starts.</p>
+
+    <div class="hero-price">
+      <div class="price-tag"><span>$</span>6</div>
+      <div class="price-label">One-time purchase Â· Instant access</div>
+    </div>
+
+    <div class="hero-actions">
+      <button class="btn btn-primary" onclick="openModal()">ðï¸ &nbsp;Buy PraiseVision â $6</button>
+      <a href="#features" class="btn btn-outline">See Features â</a>
+    </div>
+
+    <!-- Eye SVG -->
+    <div class="hero-visual">
+      <svg viewBox="0 0 440 220" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block;max-height:220px">
+        <defs>
+          <radialGradient id="bg1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#06b6d4" stop-opacity=".08"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+          <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(6,182,212,.35)"/><stop offset="100%" stop-color="rgba(29,78,216,.1)"/></radialGradient>
+          <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="softglow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <rect width="440" height="220" fill="rgba(2,9,23,.0)"/>
+        <ellipse cx="220" cy="110" rx="210" ry="100" fill="url(#bg1)"/>
+        <!-- Outer eyelid shape -->
+        <path d="M 50 110 Q 160 30 220 30 Q 280 30 390 110 Q 280 190 220 190 Q 160 190 50 110 Z" fill="none" stroke="rgba(6,182,212,.35)" stroke-width="1.5"/>
+        <!-- Main eye outline with glow -->
+        <path d="M 70 110 Q 160 42 220 42 Q 280 42 370 110 Q 280 178 220 178 Q 160 178 70 110 Z" fill="rgba(6,182,212,.03)" stroke="#06b6d4" stroke-width="2" filter="url(#glow)" class="eye-pulse"/>
+        <!-- Outer iris ring -->
+        <circle cx="220" cy="110" r="52" fill="none" stroke="rgba(6,182,212,.4)" stroke-width="1.5" stroke-dasharray="8 4" class="eye-ring"/>
+        <!-- Iris -->
+        <circle cx="220" cy="110" r="40" fill="url(#irisGrad)" stroke="#22d3ee" stroke-width="2" filter="url(#softglow)" class="eye-pulse"/>
+        <!-- Iris detail rays -->
+        <line x1="220" y1="70" x2="220" y2="82" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
+        <line x1="220" y1="138" x2="220" y2="150" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
+        <line x1="180" y1="110" x2="192" y2="110" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
+        <line x1="248" y1="110" x2="260" y2="110" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
+        <line x1="192" y1="82" x2="200" y2="90" stroke="#22d3ee" stroke-width="1" opacity=".4"/>
+        <line x1="248" y1="82" x2="240" y2="90" stroke="#22d3ee" stroke-width="1" opacity=".4"/>
+        <line x1="192" y1="138" x2="200" y2="130" stroke="#22d3ee" stroke-width="1" opacity=".4"/>
+        <line x1="248" y1="138" x2="240" y2="130" stroke="#22d3ee" stroke-width="1" opacity=".4"/>
+        <!-- Pupil -->
+        <circle cx="220" cy="110" r="16" fill="#020917"/>
+        <circle cx="220" cy="110" r="12" fill="#06b6d4" opacity=".9" filter="url(#glow)" class="eye-pulse"/>
+        <circle cx="225" cy="105" r="3.5" fill="#fff" opacity=".7"/>
+        <!-- Scan line -->
+        <line x1="70" y1="110" x2="370" y2="110" stroke="#06b6d4" stroke-width=".5" opacity=".15"/>
+        <!-- HUD overlays -->
+        <rect x="10" y="88" width="88" height="44" rx="6" fill="rgba(6,182,212,.07)" stroke="rgba(6,182,212,.2)" stroke-width="1"/>
+        <text x="18" y="106" font-family="monospace" font-size="8" fill="#22d3ee" opacity=".7">REACT TIME</text>
+        <text x="18" y="122" font-family="'Orbitron',monospace" font-size="14" font-weight="700" fill="#06b6d4" filter="url(#softglow)">187ms</text>
+        <rect x="342" y="88" width="88" height="44" rx="6" fill="rgba(6,182,212,.07)" stroke="rgba(6,182,212,.2)" stroke-width="1"/>
+        <text x="350" y="106" font-family="monospace" font-size="8" fill="#22d3ee" opacity=".7">ACCURACY</text>
+        <text x="350" y="122" font-family="'Orbitron',monospace" font-size="14" font-weight="700" fill="#06b6d4" filter="url(#softglow)">94.7%</text>
+        <!-- Bottom label -->
+        <text x="220" y="210" font-family="'Orbitron',monospace" font-size="10" font-weight="700" fill="#22d3ee" letter-spacing="4" text-anchor="middle" opacity=".7">PRAISEVISION ACTIVE</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><span class="stat-num">187ms</span><span class="stat-lbl">Avg Reaction Gain</span></div>
+  <div class="stat"><span class="stat-num">94%</span><span class="stat-lbl">Aim Accuracy Boost</span></div>
+  <div class="stat"><span class="stat-num">6K+</span><span class="stat-lbl">Players Trained</span></div>
+  <div class="stat"><span class="stat-num">$6</span><span class="stat-lbl">One-Time Price</span></div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">What You Get</div>
+    <h2 class="section-title">Every Tool You Need to <span class="accent">See Further</span></h2>
+    <p class="section-sub">Six precision-built training modules that rewire how you read the battlefield.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">ð¯</div>
+        <div class="feature-name">Visual Awareness Drills</div>
+        <div class="feature-desc">Structured exercises that train your eyes to scan the full field â spots enemies faster, edges, and high-ground threats before they act.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">â¡</div>
+        <div class="feature-name">Reaction Time Measurement</div>
+        <div class="feature-desc">Track your raw reaction speed with precision benchmarks. Know your baseline, then crush it with progressive difficulty tiers.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">ð®</div>
+        <div class="feature-name">Enemy Movement Prediction</div>
+        <div class="feature-desc">Pattern-recognition training that teaches you to read enemy edit paths, build rotations, and third-party opportunities a second early.</div>
+      </div>
+      <div clas="feature-card">
+        <div class="feature-icon">ðï¸</div>
+        <div class="feature-name">Peripheral Vision Training</div>
+        <div class="feature-desc">Expand your visual field with flicker and wide-view drills. See threats in your periphery before they enter your crosshair range.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">ð</div>
+        <div class="feature-name">Color & Contrast Optimization</div>
+        <div class="feature-desc">Custom color-profile guides calibrated for Fortnite's visual environment. Pop enemies from their background at every lighting condition.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">ð¡ï¸</div>
+        <div class="feature-name">Anti-Flash Training Mode</div>
+        <div class="feature-desc">Condition your eyes to recover instantly from flashbangs and bright ability effects. Stay in the fight when others are still blinking.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="section-label">Process</div>
+    <h2 class="section-title">How <span class="accent">PraiseVision</span> Works</h2>
+    <p class="section-sub">From purchase to in-game edge in under ten minutes.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <h3>Purchase Once</h3>
+          <p>Pay $6 â a single flat charge, no subscriptions, no hidden tiers. Instant delivery to your email with a secure download link.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <h3>Run Your Baseline</h3>
+          <p>Open the Visual Baseline module and complete your first reaction and perception assessment. Takes 4 minutes. Saves your score for tracking.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <h3>Follow the Daily Protocol</h3>
+          <p>PraiseVision generates a 10-minute daily drill sequence based on your weak points. No guesswork â just log in, run the session, and improve.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <h3>Track Your Improvement</h3>
+          <p>Past runs are saved so you can see exactly how much faster, sharper, and more accurate you've become. Share progress in Discord to flex.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="reviews">
+  <div class="container">
+    <div class="section-label">Community</div>
+    <h2 class="section-title">Players Who <span class="accent">See More</span></h2>
+    <div class="testimonials-grid">
+      <div class="tcard"><div class="tcard-stars">â¢â¢â¢â¢â¢</div><div class="tcard-text">"First week of daily training and my reaction time dropped from 220ms to 165ms. That's not placebo, that's real."</div><div class="tcard-author"><div class="tcard-avatar">JX</div><div><div class="tcard-name">Jadxx99</div><div class="tcard-sub">Fortnite Competitive</div></div></div></div>
+      <div class="tcard"><div class="tcard-stars">â¢â¢â¢â¢â¢</div><div class="tcard-text">"The peripheral drills are insane. I'm now seeing rotates before they happen. My placement jumped two divisions in a month."</div><div class="tcard-author"><div class="tcard-avatar">SK</div><div><div class="tcard-name">Skywarker_FN</div><div class="tcard-sub">Placement Grinder</div></div></div></div>
+      <div class="tcard"><div class="tcard-stars">â¢â¢â¢â¢â¢</div><div class="tcard-text">"$6 is literally nothing for what you get. Used it before cash cups and botted top 3 both times."</div><div class="tcard-author"><div class="tcard-avatar">AZ</div><div><div class="tcard-name">AzrealFN</div><div class="tcard-sub">Cash Cup Player</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="section-label">Ready to Upgrade</div>
+    <h2 class="section-title">Stop Losing Fights <span class="accent">You Should Win</span></h2>
+    <p class="section-sub">One session a day. Ten minutes. Your enemies won't know what hit them.</p>
+    <div class="cta-price-box">
+      <div><div class="cta-price-label">One-time price</div><div class="cta-price-amount"><sup>$</sup>6</div></div>
+      <div class="cta-price-note">Instant access<br>No subscriptions</div>
+    </div>
+    <div class="cta-features">
+      <div class="cta-feat">6 Training Modules</div>
+      <div class="cta-feat">Daily Drill Generator</div>
+      <div class="cta-feat">Progress Tracking</div>
+      <div class="cta-feat">Discord Support</div>
+    </div>
+    <button class="btn btn-primary" onclick="openModal()">ð Get PraiseVision â $6</button>
+  </div>
+</section>
+
+<!-- MODAL  -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal-wrap">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal(null)">&times;</button>
+
+      <div id="keyScreen">
+        <div class="modal-title">ð PraiseVision Access</div>
+        <div class="modal-sub">Already purchased? Enter your access key below. Need one? <a href="#" style="color:#22d3ee;text-decoration:none" onclick="showBuyFlow();return false">Buy PraiseVision &#x2190;</a></div>
+
+        <div class="form-group">
+          <label class="form-label">Access Key</label>
+          <input type="text" id="keyInput" class="form-input" placeholder="PV-XXXX-XXXX-XXXX" 
+                 maxlength="16" onkeyup="this.value=this.value.toUpperCase()"/>
+        </div>
+
+        <div id="verifyMsg" style="font-size:.8rem;color:#f87171;margin-top:-8px;margin-bottom:8px;min-height:20px"></div>
+
+        <button class="modal-btn" id="verifyBtn" onclick="verifyKey()">Unlock Access â</button>
+        <div class="secure-note">Keys are single-use and tied to this device once redeemed</div>
+      </div>
+
+      <div id="successScreen" class="success-screen">
+        <div class="success-icon">ð</div>
+        <div class="success-title">Access Granted</div>
+        <div class="success-msg">PraiseVision is now active on this device.<br/><br/>Refuse to miss another shot.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">PraiseJug's Ware</div>
+  <div class="footer-text">
+    PraiseVision â <a href="#" class="footer-link">Discord</a> â¢ &copy; 2025 PraiseJug's Ware
+  </div>
+</footer>
+
+<script>
+const FB_CONFIG = {
+  apiKey: "AIzaSyC5uX8Fg5IVr9Z2xy4HpssqBpjvo7Lj_6E",
+  authDomain: "praise-jug.firebaseapp.com",
+  databaseURL: "https://praise-jug-default-rtdb.firebaseio.com",
+  projectId: "praise-jug",
+  storageBucket: "praise-jug.firebasestorage.app",
+  messagingSenderId: "603451542565",
+  appId: "1:603451542565:web:4b27e82387275b248203cc"
+};
+const FB_CODES_PATH = 'praisevision_keys';
+const FB_BASE = FB_CONFIG.databaseURL;
+
+// Auto-unlock if already redeemed on this device
+document.addEventListener('DOMContentLoaded',()=>{
+  if(localStorage.getItem('pv_access')==='1'){
+    document.getElementById('successScreen').classList.add('show');
+    document.getElementById('keyScreen').style.display='none';
+  }
+});
+
+async function fbGet(path){
+  const r = await fetch(`${FB_BASE}/${path}.json`);
+  if(!r.ok) throw new Error('Fetch failed: '+r).status);
+  return r.json();
+}
+async function fbPatch(path,data){
+  const r = await fetch(`${FB_BASE}/${path}.json`,{method:'PATCH',body:JSON.stringify(data)});
+  if(!r.ok) throw new Error('Patch failed');
+  return r.json();
+}
+
+function openModal(){
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(e){
+  if(e && e.target!==document.getElementById('modal')) return;
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+function showBuyFlow(){
+  window.open('https://www.paypal.me/PrinceGreen311/6','_blank');
+}
+
+async function verifyKey(){
+  const input = document.getElementById('keyInput');
+  const btn = document.getElementById('verifyBtn');
+  const msg = document.getElementById('verifyMsg');
+  const key = input.value.trim().toUpperCase();
+
+  if(!key.match(/^PV-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/)){
+    msg.textContent='Invalid key format. Expected: PV-XXXX-XXXX-XXXX';
+    return;
+  }
+
+  btn.textContent='VERIFYING_';
+  btn.style.opacity='0.6';
+  msg.textContent='';
+
+  try{
+    const data = await fbGet(`${FB_CODES_PATH}/${key}`);
+    if(!data){
+      msg.textContent='Key not found. Double-check your key.';
+      btn.textContent='Unlock Access â';
+      btn.style.opacity='1';
+      return;
+    }
+    if(data.used){
+      msg.textContent='This key has already been used.';
+      btn.textContent='Unlock Access â';
+      btn.style.opacity='1';
+      return;
+    }
+    await fbPatch(`${FB_CODES_PATH}/${key}`,{used:true,usedAt:New Date().toISOString()});
+    localStorage.setItem('pv_access','1');
+    document.getElementById('keyScreen').style.display='none';
+    document.getElementById('successScreen').classList.add('show');
+  }catch(err){
+    msg.textContent='Verification error. Please try again.';
+    btn.textContent='Unlock Access â';
+    btn.style.opacity='1';
+  }
+}
+
+// Canvas particles
+(function(){
+const c=document.getElementById('bg');
+const x=c.getContext('2d');
+let w,h,ps=[];
+function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight}
+function makeParticle(){return{x:Math.random()*w,y:Math.random()*h,vx:.4*(Math.random()-.5),vy:-.15-Math.random()*.25,op:Math.random()*.6+.3,r:.4+Math.random()*1}}
+function init(){ps=[];for(let i=0;i<80;i++)ps.push(makeParticle())}
+function tick(){
+x.clearRect(0,0,w,h);
+ps.forEach(p=>{p.x+1=p.vx;p.y+=p.vy;if(p.y<0){p.x=Math.random()*w;p.y=h;}
+x.beginPath();
+o.arc(p.x,p.p,r,0,Math.PI*2);
+let c=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+c.addColorStop(0,`rgba(6,182,212,${p.op})`);
+c.addColorStop(1,'transparent');
+x.fillStyle=c;
+x.fill();
+});
+requestAnimationFrame(tick);
+}
+window.addEventListener('resize',resize);
+resize();init();tick();
+})();
+</script>
+</body>
+</html>
