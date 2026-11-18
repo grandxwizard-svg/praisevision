@@ -3,582 +3,2063 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PraiseVision - Visual Training Tools by PraiseJug's Ware</title>
+<title>PraiseJug's Ware — Premium Fortnite Gaming Tools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  :root{
-    --cyan:#06b6d4;--cyan2:#22d3ee;--blue:#1d4ed8;--dark:#020917;
-    --glass:rgba(6,182,212,.07);--border:rgba(6,182,212,.2);
-    --text:#e2e8f0;--muted:#94a3b8;
-  }
-  html{scroll-behavior:smooth}
-  body{background:var(--dark);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden}
+/* =========================================
+   RESET & VARIABLES
+========================================= */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060609;
+  --bg2:#0d0d16;
+  --bg3:#13131f;
+  --purple:#7c3aed;
+  --purple-l:#a855f7;
+  --purple-d:rgba(124,58,237,.18);
+  --blue:#2563eb;
+  --blue-l:#60a5fa;
+  --blue-d:rgba(37,99,235,.15);
+  --white:#fff;
+  --text:#e2e8f0;
+  --dim:#94a3b8;
+  --muted:#64748b;
+  --glass:rgba(255,255,255,.04);
+  --glass-h:rgba(255,255,255,.07);
+  --border:rgba(255,255,255,.08);
+  --border-h:rgba(255,255,255,.14);
+  --r:16px;
+  --r-sm:10px;
+  --tr:all .3s cubic-bezier(.4,0,.2,1);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;line-height:1.6}
 
-  /* ââ Canvas ââ */
-  #bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+/* =========================================
+   BACKGROUND SYSTEM
+========================================= */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+.bg-glow{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 55% at 15% 10%,rgba(124,58,237,.13) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 60% at 85% 90%,rgba(37,99,235,.1) 0%,transparent 55%),
+    radial-gradient(ellipse 40% 40% at 55% 55%,rgba(168,85,247,.05) 0%,transparent 60%);
+  animation:bgPulse 18s ease-in-out infinite alternate
+}
+@keyframes bgPulse{
+  0%{background:radial-gradient(ellipse 60% 55% at 15% 10%,rgba(124,58,237,.13) 0%,transparent 55%),radial-gradient(ellipse 50% 60% at 85% 90%,rgba(37,99,235,.1) 0%,transparent 55%),radial-gradient(ellipse 40% 40% at 55% 55%,rgba(168,85,247,.05) 0%,transparent 60%)}
+  50%{background:radial-gradient(ellipse 70% 60% at 65% 20%,rgba(124,58,237,.14) 0%,transparent 55%),radial-gradient(ellipse 55% 50% at 15% 75%,rgba(37,99,235,.11) 0%,transparent 55%),radial-gradient(ellipse 50% 50% at 80% 45%,rgba(168,85,247,.06) 0%,transparent 60%)}
+  100%{background:radial-gradient(ellipse 50% 70% at 80% 30%,rgba(124,58,237,.1) 0%,transparent 55%),radial-gradient(ellipse 65% 40% at 10% 60%,rgba(37,99,235,.08) 0%,transparent 55%),radial-gradient(ellipse 55% 60% at 60% 80%,rgba(168,85,247,.05) 0%,transparent 60%)}
+}
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:52px 52px;
+  mask-image:radial-gradient(ellipse 100% 100% at center,black 20%,transparent 80%)
+}
 
-  /* ââ Nav ââ */
-  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;justify-content:space-between;align-items:center;background:rgba(2,9,23,.8);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-  .nav-brand{font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--cyan);text-transform:uppercase}
-  .nav-brand span{color:var(--text)}
-  .nav-cta{background:linear-gradient(135deg,var(--cyan),var(--blue));border:none;color:#fff;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;padding:10px 24px;border-radius:6px;cursor:pointer;transition:all .2s;text-transform:uppercase}
-  .nav-cta:hover{transform:translateY(-1px);box-shadow:0 0 20px rgba(6,182,212,.4)}
+/* =========================================
+   LAYOUT
+========================================= */
+#app{position:relative;z-index:1;min-height:100vh}
+.page{display:none;min-height:calc(100vh - 80px);padding-top:80px;animation:fadeUp .4s ease-out}
+.page.active{display:block}
+.container{max-width:1280px;margin:0 auto;padding:0 24px}
+.section{padding:100px 0}
+.section-sm{padding:60px 0}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-  /* ââ Hero ââ */
-  .hero{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 40px 80px}
-  .hero-inner{max-width:860px}
-  .hero-badge{display:inline-block;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.3);color:var(--cyan2);font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;padding:6px 18px;border-radius:20px;margin-bottom:28px;text-transform:uppercase}
-  .hero h1{font-family:'Orbitron',monospace;font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.05;letter-spacing:-1px;margin-bottom:24px}
-  .hero h1 .accent{background:linear-gradient(135deg,var(--cyan),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .hero p{font-size:1.15rem;color:var(--muted);max-width:580px;margin:0 auto 48px;line-height:1.75}
-  .hero-price{display:inline-flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:40px}
-  .price-tag{font-family:'Orbitron',monospace;font-size:3.5rem;font-weight:900;color:#fff;line-height:1}
-  .price-tag span{font-size:1.8rem;vertical-align:super;color:var(--cyan)}
-  .price-label{font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-  .hero-actions{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;border-radius:8px;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;border:none;text-decoration:none}
-  .btn-primary{background:linear-gradient(135deg,var(--cyan),var(--blue));color:#fff;box-shadow:0 0 30px rgba(6,182,212,.3)}
-  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 50px rgba(6,182,212,.5)}
-  .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
-  .btn-outline:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(6,182,212,.05)}
+/* =========================================
+   TYPOGRAPHY
+========================================= */
+h1,h2,h3,h4,h5{font-family:'Orbitron',monospace;line-height:1.2;font-weight:700}
+.xl{font-size:clamp(2.4rem,6vw,4.8rem);font-weight:900;letter-spacing:-.02em}
+.lg{font-size:clamp(1.8rem,4vw,3.2rem);font-weight:800}
+.md{font-size:clamp(1.3rem,3vw,2rem);font-weight:700}
+.g-text{background:linear-gradient(135deg,var(--purple-l) 0%,var(--blue-l) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.g-gold{background:linear-gradient(135deg,#f59e0b,#fbbf24);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.text-dim{color:var(--dim)}
+.text-muted{color:var(--muted)}
+@keyframes textGlow{from{filter:drop-shadow(0 0 12px rgba(168,85,247,.4))}to{filter:drop-shadow(0 0 28px rgba(168,85,247,.7))}}
+.glow-anim{animation:textGlow 3s ease-in-out infinite alternate}
 
-  /* ââ Eye SVG Hero Visual ââ */
-  .hero-visual{position:relative;margin:60px auto 0;max-width:520px}
-  .eye-ring{animation:rotRing 12s linear infinite}
-  .eye-pulse{animation:eyePulse 2.4s ease-in-out infinite}
-  .scan-beam{animation:scanBeam 3s ease-in-out infinite}
-  @keyframes rotRing{from{transform-origin:220px 100px;transform:rotate(0deg)}to{transform-origin:220px 100px;transform:rotate(360deg)}}
-  @keyframes eyePulse{0%,100%{opacity:.7}50%{opacity:1}}
-  @keyframes scanBeam{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(30px);opacity:1}}
+/* =========================================
+   NAVIGATION
+========================================= */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:80px;
+  display:flex;align-items:center;padding:0 24px;
+  background:rgba(6,6,9,.72);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);transition:var(--tr)
+}
+nav.scrolled{background:rgba(6,6,9,.95);box-shadow:0 4px 32px rgba(0,0,0,.5)}
+.nav-inner{max-width:1280px;margin:0 auto;width:100%;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:11px;cursor:pointer;text-decoration:none}
+.logo-svg{width:38px;height:38px;flex-shrink:0}
+.logo-text{font-family:'Orbitron',monospace;font-weight:800;font-size:1rem;color:#fff;letter-spacing:.04em;line-height:1.1}
+.logo-text em{font-style:normal;background:linear-gradient(135deg,var(--purple-l),var(--blue-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-links{display:flex;align-items:center;gap:2px;list-style:none}
+.nav-links a{
+  padding:8px 15px;border-radius:8px;font-size:.875rem;font-weight:500;
+  color:var(--dim);text-decoration:none;transition:var(--tr);cursor:pointer;position:relative
+}
+.nav-links a:hover{color:#fff;background:var(--glass)}
+.nav-links a.active{color:#fff}
+.nav-links a.active::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:16px;height:2px;background:linear-gradient(90deg,var(--purple-l),var(--blue-l));border-radius:2px}
+.nav-actions{display:flex;align-items:center;gap:10px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 22px;border-radius:10px;font-size:.875rem;font-weight:600;cursor:pointer;border:none;transition:var(--tr);text-decoration:none;white-space:nowrap;font-family:'Inter',sans-serif}
+.btn-primary{background:linear-gradient(135deg,var(--purple) 0%,var(--blue) 100%);color:#fff;box-shadow:0 4px 15px rgba(124,58,237,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.5)}
+.btn-secondary{background:var(--glass);color:var(--text);border:1px solid var(--border);backdrop-filter:blur(10px)}
+.btn-secondary:hover{background:var(--glass-h);border-color:var(--border-h);color:#fff;transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--dim);padding:8px 15px}
+.btn-ghost:hover{color:#fff;background:var(--glass)}
+.btn-lg{padding:14px 30px;font-size:.95rem;border-radius:12px}
+.btn-sm{padding:7px 14px;font-size:.78rem;border-radius:8px}
+.ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px}
+.ham span{display:block;width:20px;height:2px;background:#fff;border-radius:2px;transition:var(--tr)}
+.mobile-nav{display:none;position:fixed;top:80px;left:0;right:0;background:rgba(6,6,9,.98);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);padding:16px 24px 24px;z-index:999;flex-direction:column;gap:4px}
+.mobile-nav.open{display:flex}
+.mobile-nav a{padding:11px 15px;border-radius:9px;font-size:.9rem;font-weight:500;color:var(--dim);text-decoration:none;cursor:pointer;transition:var(--tr)}
+.mobile-nav a:hover,.mobile-nav a.active{color:#fff;background:var(--glass)}
 
-  /* ââ Stats Row ââ */
-  .stats{position:relative;z-index:1;display:flex;gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-  .stat{flex:1;padding:36px 24px;text-align:center;background:var(--dark)}
-  .stat-num{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:var(--cyan);display:block}
-  .stat-lbl{font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:6px;display:block}
+/* =========================================
+   CARDS & BADGES
+========================================= */
+.card{background:var(--glass);border:1px solid var(--border);border-radius:var(--r);backdrop-filter:blur(20px);transition:var(--tr);overflow:hidden}
+.card:hover{background:var(--glass-h);border-color:var(--border-h);transform:translateY(-4px);box-shadow:0 20px 44px rgba(0,0,0,.35)}
+.card-glow:hover{box-shadow:0 20px 44px rgba(0,0,0,.35),0 0 32px rgba(124,58,237,.18)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:100px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.badge-purple{background:rgba(124,58,237,.18);color:var(--purple-l);border:1px solid rgba(124,58,237,.3)}
+.badge-blue{background:rgba(37,99,235,.18);color:var(--blue-l);border:1px solid rgba(37,99,235,.3)}
+.badge-green{background:rgba(16,185,129,.14);color:#34d399;border:1px solid rgba(16,185,129,.3)}
+.badge-gold{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.3)}
+.badge-red{background:rgba(239,68,68,.14);color:#f87171;border:1px solid rgba(239,68,68,.3)}
+.dot-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 7px rgba(34,197,94,.5);animation:liveDot 2s ease-in-out infinite}
+@keyframes liveDot{0%,100%{box-shadow:0 0 7px rgba(34,197,94,.5)}50%{box-shadow:0 0 14px rgba(34,197,94,.8),0 0 22px rgba(34,197,94,.3)}}
 
-  /* ââ Sections ââ */
-  section{position:relative;z-index:1;padding:100px 40px}
-  .container{max-width:1100px;margin:0 auto}
-  .section-label{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:4px;color:var(--cyan);text-transform:uppercase;margin-bottom:16px}
-  .section-title{font-family:'Orbitron',monospace;font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;line-height:1.2;margin-bottom:20px}
-  .section-title .accent{background:linear-gradient(135deg,var(--cyan),var(--cyan2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-  .section-sub{color:var(--muted);max-width:520px;line-height:1.75;margin-bottom:60px}
+/* =========================================
+   SECTION HEADER
+========================================= */
+.section-head{text-align:center;margin-bottom:60px}
+.section-head .chip{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--purple-l);margin-bottom:16px}
+.section-head .chip::before,.section-head .chip::after{content:'';width:20px;height:1px;background:var(--purple-l)}
+.section-head h2{margin-bottom:14px}
+.section-head p{font-size:1.05rem;color:var(--dim);max-width:540px;margin:0 auto}
 
-  /* ââ Features Grid ââ */
-  .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
-  .feature-card{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:32px;transition:all .3s;position:relative;overflow:hidden}
-  .feature-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(6,182,212,.05),transparent);opacity:0;transition:opacity .3s}
-  .feature-card:hover::before{opacity:1}
-  .feature-card:hover{border-color:rgba(6,182,212,.4);transform:translateY(-4px);box-shadow:0 20px 60px rgba(6,182,212,.1)}
-  .feature-icon{width:52px;height:52px;border-radius:12px;background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.2);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
-  .feature-name{font-family:'Orbitron',monospace;font-size:.85rem;font-weight:700;letter-spacing:1px;color:#fff;margin-bottom:10px}
-  .feature-desc{font-size:.88rem;color:var(--muted);line-height:1.65}
+/* =========================================
+   HOME — HERO
+========================================= */
+.hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;position:relative}
+.hero-wrap{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;width:100%}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;padding:5px 15px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.28);border-radius:100px;font-size:.78rem;font-weight:600;color:var(--purple-l);margin-bottom:22px;letter-spacing:.04em}
+.hero-pill .p-dot{width:6px;height:6px;background:var(--purple-l);border-radius:50%;animation:pdot 2s ease-in-out infinite}
+@keyframes pdot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.hero h1{margin-bottom:22px}
+.hero h1 .line{display:block}
+.hero-p{font-size:1.1rem;color:var(--dim);line-height:1.8;max-width:460px;margin-bottom:36px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.hero-stats{display:flex;gap:36px;margin-top:52px;padding-top:36px;border-top:1px solid var(--border)}
+.hero-stats .st-val{font-family:'Orbitron',monospace;font-size:1.7rem;font-weight:800;line-height:1;margin-bottom:4px}
+.hero-stats .st-lbl{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.hero-vis{position:relative}
+@keyframes floatAnim{0%,100%{transform:translateY(0)}50%{transform:translateY(-18px)}}
+.float{animation:floatAnim 6s ease-in-out infinite}
+.hero-img-wrap{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 0 60px rgba(124,58,237,.25),0 30px 80px rgba(0,0,0,.6)}
+.hero-bg-img{width:100%;display:block;height:420px;object-fit:cover}
+.hero-img-overlay{position:absolute;bottom:0;left:0;right:0;padding:18px;background:linear-gradient(to top,rgba(6,6,9,.92) 0%,rgba(6,6,9,.5) 60%,transparent 100%)}
+.hc-head{display:flex;align-items:center;gap:12px}
+.hc-dots{display:flex;gap:6px}
+.hc-dots span{width:10px;height:10px;border-radius:50%}
+.hc-dots span:nth-child(1){background:#ef4444}
+.hc-dots span:nth-child(2){background:#f59e0b}
+.hc-dots span:nth-child(3){background:#22c55e}
+.hc-title{font-family:'Orbitron',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.1em}
+.ppi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.ppi{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:11px;padding:14px;cursor:pointer;transition:var(--tr)}
+.ppi:hover{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.35);box-shadow:0 0 18px rgba(124,58,237,.1)}
+.ppi-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:9px;font-size:.95rem}
+.ppi-name{font-family:'Orbitron',monospace;font-size:.62rem;font-weight:700;color:#fff;letter-spacing:.05em;margin-bottom:2px}
+.ppi-price{font-size:.72rem;color:var(--purple-l);font-weight:600}
 
-  /* ââ How it works ââ */
-  .steps{display:flex;flex-direction:column;gap:0}
-  .step{display:grid;grid-template-columns:60px 1fr;gap:32px;padding:40px 0;border-bottom:1px solid rgba(6,182,212,.1);align-items:start}
-  .step:last-child{border-bottom:none}
-  .step-num{font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:rgba(6,182,212,.2);line-height:1}
-  .step-content h3{font-family:'Orbitron',monospace;font-size:1rem;font-weight:700;color:#fff;margin-bottom:10px;letter-spacing:.5px}
-  .step-content p{color:var(--muted);line-height:1.7;font-size:.9rem}
+/* =========================================
+   FEATURES
+========================================= */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.feat-card{padding:30px}
+.feat-icon{width:52px;height:52px;border-radius:13px;display:flex;align-items:center;justify-content:center;margin-bottom:18px;font-size:1.4rem}
+.feat-card h3{font-size:1.05rem;margin-bottom:10px}
+.feat-card p{font-size:.875rem;color:var(--dim);line-height:1.7}
 
-  /* ââ Testimonials ââ */
-  .testimonials-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
-  .tcard{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:28px}
-  .tcard-stars{color:var(--cyan);font-size:1.1rem;margin-bottom:14px;letter-spacing:2px}
-  .tcard-text{font-size:.9rem;color:var(--text);line-height:1.7;margin-bottom:20px;font-style:italic}
-  .tcard-author{display:flex;align-items:center;gap:12px}
-  .tcard-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--cyan),var(--blue));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;color:#fff}
-  .tcard-name{font-family:'Orbitron',monospace;font-size:.75rem;font-weight:700;color:#fff;letter-spacing:.5px}
-  .tcard-sub{font-size:.72rem;color:var(--muted)}
+/* =========================================
+   TESTIMONIALS
+========================================= */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.test-card{padding:26px}
+.test-stars{display:flex;gap:3px;margin-bottom:14px;color:#f59e0b;font-size:.85rem}
+.test-text{font-size:.875rem;color:var(--dim);line-height:1.8;margin-bottom:18px}
+.test-author{display:flex;align-items:center;gap:10px}
+.test-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0}
+.test-name{font-weight:600;font-size:.85rem}
+.test-handle{font-size:.72rem;color:var(--muted)}
 
-  /* ââ CTA Section ââ */
-  .cta-section{text-align:center;background:linear-gradient(135deg,rgba(6,182,212,.06),rgba(29,78,216,.06));border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-  .cta-section .section-title{margin-bottom:16px}
-  .cta-section .section-sub{margin:0 auto 48py}
-  .cta-price-box{display:inline-flex;align-items:center;gap:24px;background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.25);border-radius:16px;padding:24px 48px;margin-bottom:40px}
-  .cta-price-label{font-size:.8rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-  .cta-price-amount{font-family:'Orbitron',monospace;font-size:3rem;font-weight:900;color:#fff}
-  .cta-price-amount sup{font-size:1.4rem;color:var(--cyan);vertical-align:super}
-  .cta-price-note{font-size:.75rem;color:var(--cyan);text-transform:uppercase;letter-spacing:2px}
-  .cta-features{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:48px}
-  .cta-feat{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
-  .cta-feat::before{content:'â';color:var(--cyan);font-weight:700}
+/* =========================================
+   PRODUCTS PAGE
+========================================= */
+.prod-header{padding:80px 0 40px;text-align:center}
+.prod-filter{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:44px}
+.f-btn{padding:7px 18px;border-radius:100px;font-size:.82rem;font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--glass);color:var(--dim);transition:var(--tr)}
+.f-btn:hover,.f-btn.active{background:rgba(124,58,237,.14);border-color:rgba(124,58,237,.4);color:var(--purple-l)}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:22px;padding-bottom:80px}
+.prod-card{cursor:pointer}
+.pc-vis{height:210px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.pc-body{padding:22px}
+.pc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.pc-name{font-size:1.05rem;margin-bottom:3px}
+.pc-tag{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.pc-desc{font-size:.85rem;color:var(--dim);line-height:1.6;margin-bottom:18px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.pc-feats{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px}
+.f-tag{padding:3px 9px;border-radius:6px;font-size:.7rem;font-weight:500;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--dim)}
+.pc-foot{display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid var(--border)}
+.pc-price .amount{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:800;color:#fff}
+.pc-price .per{font-size:.72rem;color:var(--muted)}
 
-  /* ââ Purchase Modal ââ */
-  .modal-overlay{position:fixed;inset:0;z-index:999;background:rgba(2,9,23,.9);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center}
-  .modal-overlay.open{display:flex}
-  .modal;background:#0a1628;border:1px solid rgba(6,182,212,.3);border-radius:20px;padding:48px;max-width:460px;width:90%;box-shadow:0 0 80px rgba(6,182,212,.15);animation:modalIn .3s cubic-bezier(.34,1.56,.64,1)}
-  @keyframes modalIn{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
-  .modal-title{font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:#fff;margin-bottom:8px}
-  .modal-sub{font-size:.85rem;color:var(--muted);margin-bottom:32px;line-height:1.6}
-  .modal-price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:32px}
-  .modal-price{font-family:'Orbitron',monospace;font-size:2.5rem;font-weight:900;color:var(--cyan)}
-  .modal-price-label{font-size:.8rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
-  .form-group{margin-bottom:20px}
-  .form-label{display:block;font-size:.75rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-  .form-input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(6,182,212,.2);border-radius:8px;padding:12px 16px;color:#fff;font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:border .2s}
-  .form-input:focus{border-color:var(--cyan);background:rgba(6,182,212,.06)}
-  .form-input::placeholder{color:rgba(148,163,184,.4)}
-  .modal-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--cyan),var(--blue));border:none;border-radius:8px;color:#fff;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;margin-top:8px}
-  .modal-btn:hover{box-shadow:0 0 40px rgba(6,182,212,.4);transform:translateY(-1px)}
-  .modal-close{position:absolute;top:20px;right:24px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;padding:4px}
-  .modal-close:hover{color:#fff}
-  .modal-wrap{position:relative}
-  .secure-note{text-align:center;font-size:.72rem;color:var(--muted);margin-top:16px;display:flex;align-items:center;justify-content:center;gap:6px}
-  .secure-note::before{content:'ð'}
+/* =========================================
+   PRODUCT DETAIL
+========================================= */
+.pd-breadcrumb{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--muted);margin-bottom:44px;flex-wrap:wrap}
+.pd-breadcrumb a{color:var(--muted);text-decoration:none;cursor:pointer;transition:var(--tr)}
+.pd-breadcrumb a:hover{color:#fff}
+.pd-breadcrumb .sep{opacity:.4}
+.pd-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:start;margin-bottom:72px}
+.pd-image{height:440px;border-radius:20px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--glass);border:1px solid var(--border);position:relative}
+.pd-image::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple-l),var(--blue-l))}
+.pd-info{position:sticky;top:100px}
+.pd-info .badges{display:flex;gap:7px;margin-bottom:18px;flex-wrap:wrap}
+.pd-info h1{font-size:2.2rem;margin-bottom:6px}
+.pd-tagline{font-size:.9rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:22px}
+.pd-desc{font-size:.95rem;color:var(--dim);line-height:1.8;margin-bottom:28px}
+.pd-feats{list-style:none;margin-bottom:28px;display:flex;flex-direction:column;gap:9px}
+.pd-feats li{display:flex;align-items:center;gap:9px;font-size:.88rem}
+.pd-feats .ck{width:17px;height:17px;border-radius:50%;background:rgba(16,185,129,.18);border:1px solid rgba(16,185,129,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.6rem;color:#34d399}
+.price-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
+.pt{background:var(--glass);border:1px solid var(--border);border-radius:11px;padding:14px;cursor:pointer;transition:var(--tr);text-align:center}
+.pt:hover,.pt.sel{border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.1)}
+.pt.sel{box-shadow:0 0 20px rgba(124,58,237,.18)}
+.pt .t-name{font-family:'Orbitron',monospace;font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+.pt .t-price{font-family:'Orbitron',monospace;font-size:1.25rem;font-weight:800;color:#fff}
+.pt.pop{border-color:rgba(124,58,237,.35);background:rgba(124,58,237,.07)}
+.pt .pop-lbl{font-size:.6rem;color:var(--purple-l);font-weight:600;display:block;margin-bottom:3px}
+.pd-buy{display:flex;gap:11px}
+.pd-buy .btn{flex:1}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 
-  /* ââ Success Screen ââ */
-  .success-screen{display:none;text-align:center;padding:20px 0}
-  .success-screen.show{display:block}
-  .success-icon{font-size:4rem;margin-bottom:20px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
-  @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
-  .success-title{font-family:'Orbitron',monospace;font-size:1.2rem;font-weight:900;color:var(--cyan);margin-bottom:12px}
-  .success-msg{color:var(--muted);font-size:.9rem;line-height:1.65}
+/* =========================================
+   ABOUT PAGE
+========================================= */
+.about-hero{padding:100px 0 50px;text-align:center}
+.about-story-grid{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center;padding:60px 0}
+.about-vis{height:400px;border-radius:20px;overflow:hidden;background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;position:relative}
+.about-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:50px}
+.as-card{padding:28px 22px;text-align:center}
+.as-card .val{font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;margin-bottom:7px}
+.as-card .lbl{font-size:.8rem;color:var(--muted)}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:44px}
+.team-card{padding:30px;text-align:center}
+.team-av{width:76px;height:76px;border-radius:50%;margin:0 auto 14px;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-weight:700;font-size:1.2rem;color:#fff}
+.team-card h4{font-size:.95rem;margin-bottom:4px}
+.team-role{font-size:.78rem;color:var(--purple-l);font-weight:500;margin-bottom:11px}
+.team-card p{font-size:.82rem;color:var(--muted);line-height:1.6}
 
-  /* ââ Footer ââ */
-  footer{position:relative;z-index:1;padding:48px 40px;border-top:1px solid var(--border);text-align:center}
-  .footer-brand{font-family:'Orbitron',monospace;font-size:11px;letter-spacing:3px;color:var(--cyan);text-transform:uppercase;margin-bottom:12px}
-  .footer-text{font-size:.8rem;color:var(--muted)}
-  .footer-link{color:var(--cyan);text-decoration:none}
-  .footer-link:hover{text-decoration:underline}
+/* =========================================
+   FAQ
+========================================= */
+.faq-wrap{max-width:740px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:22px 0;cursor:pointer;transition:var(--tr)}
+.faq-q:hover{color:#fff}
+.faq-q h3{font-family:'Inter',sans-serif;font-size:.95rem;font-weight:600;flex:1;padding-right:22px}
+.faq-tog{width:30px;height:30px;border-radius:7px;background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--tr);font-size:1.1rem;color:var(--dim)}
+.faq-item.open .faq-tog{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.4);color:var(--purple-l);transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1)}
+.faq-item.open .faq-a{max-height:300px}
+.faq-a p{padding:0 0 22px;font-size:.875rem;color:var(--dim);line-height:1.8}
 
-  /* ââ Live indicator ââ */
-  .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--cyan);margin-right:6px;animation:blink 1.4s ease-in-out infinite}
-  @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+/* =========================================
+   CONTACT
+========================================= */
+.contact-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:56px}
+.contact-info h2{font-size:1.8rem;margin-bottom:14px}
+.contact-info>p{color:var(--dim);line-height:1.8;margin-bottom:36px}
+.contact-methods{display:flex;flex-direction:column;gap:14px}
+.cm{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:12px;background:var(--glass);border:1px solid var(--border)}
+.cm-icon{width:42px;height:42px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;flex-shrink:0}
+.cm-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:1px}
+.cm-val{font-size:.875rem;font-weight:600;color:#fff}
+.contact-form-card{padding:36px}
+.fg{margin-bottom:18px}
+.fg label{display:block;font-size:.82rem;font-weight:500;color:var(--dim);margin-bottom:7px;letter-spacing:.03em}
+.fg input,.fg textarea,.fg select{width:100%;padding:11px 15px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:9px;color:#fff;font-size:.875rem;font-family:'Inter',sans-serif;transition:var(--tr);outline:none}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--muted)}
+.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:rgba(124,58,237,.5);background:rgba(124,58,237,.05);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.fg textarea{height:112px;resize:vertical}
+.fg select{-webkit-appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='%2364748b'%3E%3Cpath d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 15px center}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
-  @media(max-width:640px){
-    nav{padding:16px 20px}
-    section{padding:70px 20px}
-    .stats{flex-wrap:wrap}
-    .stat{min-width:50%;border:1px solid var(--border)}
-    .cta-price-box{flex-direction:column;gap:8px;padding:24px 32px}
-    .step{grid-template-columns:40px 1fr;gap:16px}
-  }
+/* =========================================
+   DASHBOARD
+========================================= */
+.login-card{max-width:400px;margin:60px auto;padding:44px}
+.login-card h2{font-size:1.6rem;text-align:center;margin-bottom:7px}
+.login-card .sub{text-align:center;color:var(--muted);font-size:.875rem;margin-bottom:28px}
+.dash-layout{display:none;gap:28px}
+.dash-layout.show{display:grid;grid-template-columns:240px 1fr}
+.dash-side{position:sticky;top:100px;height:fit-content}
+.dash-nav-card{padding:22px;border-radius:15px;background:var(--glass);border:1px solid var(--border)}
+.dn-user{display:flex;align-items:center;gap:11px;padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.dn-av{width:42px;height:42px;border-radius:9px;background:linear-gradient(135deg,var(--purple),var(--blue));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:#fff}
+.dn-name{font-weight:600;font-size:.875rem}
+.dn-tier{font-size:.72rem;color:var(--purple-l)}
+.dn-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
+.dn-nav li a{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:8px;font-size:.85rem;color:var(--dim);text-decoration:none;cursor:pointer;transition:var(--tr)}
+.dn-nav li a:hover,.dn-nav li a.active{background:rgba(124,58,237,.14);color:#fff}
+.dash-panel{display:none}
+.dash-panel.active{display:block}
+.d-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.ds{padding:18px;border-radius:11px;background:var(--glass);border:1px solid var(--border)}
+.ds-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.ds-val{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:700}
+.orders-tbl{width:100%;border-collapse:collapse}
+.orders-tbl th{padding:11px 15px;text-align:left;font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border-bottom:1px solid var(--border)}
+.orders-tbl td{padding:14px 15px;font-size:.85rem;border-bottom:1px solid rgba(255,255,255,.03)}
+.orders-tbl tr:hover td{background:rgba(255,255,255,.02)}
+.dl-items{display:flex;flex-direction:column;gap:12px}
+.dl-item{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-radius:12px;background:var(--glass);border:1px solid var(--border)}
+.dl-item-info{display:flex;align-items:center;gap:14px}
+.dl-item-icon{width:40px;height:40px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.dl-item-name{font-weight:600;font-size:.875rem}
+.dl-item-ver{font-size:.75rem;color:var(--muted)}
+
+/* =========================================
+   FOOTER
+========================================= */
+footer{border-top:1px solid var(--border);padding:72px 0 36px;position:relative;z-index:1}
+.foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:52px;margin-bottom:52px}
+.foot-brand p{font-size:.85rem;color:var(--muted);line-height:1.8;max-width:260px;margin:16px 0 22px}
+.socials{display:flex;gap:9px}
+.soc{width:36px;height:36px;border-radius:9px;background:var(--glass);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--muted);cursor:pointer;transition:var(--tr)}
+.soc:hover{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.35);color:#fff}
+.foot-col h4{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:14px}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.foot-col ul li a{font-size:.85rem;color:var(--dim);text-decoration:none;cursor:pointer;transition:var(--tr)}
+.foot-col ul li a:hover{color:#fff}
+.foot-bot{padding-top:28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.foot-bot p{font-size:.78rem;color:var(--muted)}
+
+/* =========================================
+   TOAST
+========================================= */
+.toast-wrap{position:fixed;top:92px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:9px}
+.toast{padding:13px 18px;border-radius:11px;background:var(--bg3);border:1px solid var(--border);backdrop-filter:blur(20px);display:flex;align-items:center;gap:9px;font-size:.85rem;font-weight:500;box-shadow:0 10px 32px rgba(0,0,0,.5);animation:toastIn .3s cubic-bezier(.4,0,.2,1);max-width:300px}
+.toast.success{border-color:rgba(16,185,129,.35)}
+.toast.error{border-color:rgba(239,68,68,.35)}
+@keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes toastOut{from{transform:translateX(0);opacity:1}to{transform:translateX(110%);opacity:0}}
+
+/* =========================================
+   SCROLL REVEAL
+========================================= */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
+
+/* =========================================
+   PRICING CTA BANNER
+========================================= */
+.cta-banner{padding:56px 48px;border-radius:22px;background:linear-gradient(135deg,rgba(124,58,237,.1) 0%,rgba(37,99,235,.1) 100%);border:1px solid rgba(124,58,237,.2);text-align:center;position:relative;overflow:hidden;margin-bottom:80px}
+.cta-banner::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--purple-l),var(--blue-l),transparent)}
+.cta-banner h2{font-size:2rem;margin-bottom:12px}
+.cta-banner p{color:var(--dim);max-width:480px;margin:0 auto 28px}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+@media(max-width:1024px){
+  .hero-wrap{grid-template-columns:1fr;gap:52px}
+  .hero-vis{order:-1}
+  .hero-card{max-width:480px;margin:0 auto}
+  .feat-grid{grid-template-columns:repeat(2,1fr)}
+  .about-story-grid{grid-template-columns:1fr}
+  .about-stats{grid-template-columns:repeat(2,1fr)}
+  .team-grid{grid-template-columns:repeat(2,1fr)}
+  .contact-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr 1fr;gap:36px}
+  .pd-grid{grid-template-columns:1fr}
+  .test-grid{grid-template-columns:repeat(2,1fr)}
+  .related-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .nav-links,.nav-actions .btn-ghost{display:none}
+  .ham{display:flex}
+  .feat-grid{grid-template-columns:1fr}
+  .prod-grid{grid-template-columns:1fr}
+  .about-stats{grid-template-columns:repeat(2,1fr)}
+  .team-grid{grid-template-columns:1fr}
+  .contact-form-card{padding:22px}
+  .form-row{grid-template-columns:1fr}
+  .price-tiers{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+  .foot-bot{flex-direction:column;gap:11px;text-align:center}
+  .test-grid{grid-template-columns:1fr}
+  .cta-banner{padding:36px 22px}
+  .hero-stats{gap:22px;flex-wrap:wrap}
+  .dash-layout.show{grid-template-columns:1fr}
+  .d-stats{grid-template-columns:repeat(2,1fr)}
+  .related-grid{grid-template-columns:1fr}
+}
+/* scrollbar */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(124,58,237,.35);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(124,58,237,.55)}
+/* misc */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:22px 0}
+.shimmer{position:relative;overflow:hidden}
+.shimmer::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.025) 50%,transparent 100%);transform:translateX(-100%);animation:shim 3s ease-in-out infinite}
+@keyframes shim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 </style>
 </head>
 <body>
 
-<canvas id="bg"></canvas>
+<!-- BACKGROUND -->
+<canvas id="bg-canvas"></canvas>
+<div class="bg-glow"></div>
+<div class="bg-grid"></div>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-brand">PraiseJug's Ware &nbsp;/&nbsp; <span>PraiseVision</span></div>
-  <button class="nav-cta" onclick="openModal()">Get PraiseVision - $6</button>
+<div id="app">
+
+<!-- ============================================================
+     NAV
+============================================================ -->
+<nav id="main-nav">
+  <div class="nav-inner">
+    <div class="logo" onclick="go('home')">
+      <svg class="logo-svg" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="lg1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#a855f7"/>
+            <stop offset="100%" stop-color="#60a5fa"/>
+          </linearGradient>
+        </defs>
+        <polygon points="19,2 35,10 35,28 19,36 3,28 3,10" fill="rgba(124,58,237,.12)" stroke="url(#lg1)" stroke-width="1.5"/>
+        <text x="19" y="22" text-anchor="middle" font-family="'Orbitron',monospace" font-weight="900" font-size="11" fill="url(#lg1)">PJ</text>
+        <circle cx="30" cy="8" r="3" fill="url(#lg1)" opacity=".7"/>
+      </svg>
+      <div class="logo-text">PraiseJug's<br><em>Ware</em></div>
+    </div>
+    <ul class="nav-links">
+      <li><a onclick="go('home')" data-page="home" class="active">Home</a></li>
+      <li><a onclick="go('products')" data-page="products">Products</a></li>
+      <li><a onclick="go('about')" data-page="about">About</a></li>
+      <li><a onclick="go('faq')" data-page="faq">FAQ</a></li>
+      <li><a onclick="go('contact')" data-page="contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" onclick="go('dashboard')">Sign In</button>
+      <button class="btn btn-primary" onclick="go('products')">Shop Now</button>
+      <div class="ham" onclick="toggleMenu()" id="ham">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-badge"><span class="live-dot"></span>Visual Training Active</div>
-    <h1>See The <span class="accent">Game</span><br>Before It Happens</h1>
-    <p>PraiseVision sharpens your in-game perception so you anticipate enemy edits, track movement, and lock your crosshair before the fight even starts.</p>
-
-    <div class="hero-price">
-      <div class="price-tag"><span>$</span>6</div>
-      <div class="price-label">One-time purchase &middot; Instant access</div>
-    </div>
-
-    <div class="hero-actions">
-      <button class="btn btn-primary" onclick="openModal()">&#128065; &nbsp;Buy PraiseVision - $6</button>
-      <a href="#features" class="btn btn-outline">See Features â</a>
-    </div>
-
-    <!-- Eye SVG -->
-    <div class="hero-visual">
-      <svg viewBox="0 0 440 220" xmlns="http://www.w3.org/2000/svg" width="100%" style="display:block;max-height:220px">
-        <defs>
-          <radialGradient id="bg1" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#06b6d4" stop-opacity=".08"/><stop offset="100%" stop-color="transparent"/></radialGradient>
-          <radialGradient id="irisGrad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="rgba(6,182,212,.35)"/><stop offset="100%" stop-color="rgba(29,78,216,.1)"/></radialGradient>
-          <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-          <filter id="softglow"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        </defs>
-        <rect width="440" height="220" fill="rgba(2,9,23,.0)"/>
-        <ellipse cx="220" cy="110" rx="210" ry="100" fill="url(#bg1)"/>
-        <!-- Outer eyelid shape -->
-        <path d="M 50 110 Q 160 30 220 30 Q 280 30 390 110 Q 280 190 220 190 Q 160 190 50 110 Z" fill="none" stroke="rgba(6,182,212,.35)" stroke-width="1.5"/>
-        <!-- Main eye outline with glow -->
-        <path d="M 70 110 Q 160 42 220 42 Q 280 42 370 110 Q 280 178 220 178 Q 160 178 70 110 Z" fill="rgba(6,182,212,.03)" stroke="#06b6d4" stroke-width="2" filter="url(#glow)" class="eye-pulse"/>
-        <!-- Outer iris ring -->
-        <circle cx="220" cy="110" r="52" fill="none" stroke="rgba(6,182,212,.4)" stroke-width="1.5" stroke-dasharray="8 4" class="eye-ring"/>
-        <!-- Iris -->
-        <circle cx="220" cy="110" r="40" fill="url(#irisGrad)" stroke="#22d3ee" stroke-width="2" filter="url(#softglow)" class="eye-pulse"/>
-        <!-- Iris detail rays -->
-        <line x1="220" y1="70" x2="220" y2="82" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
-        <line x1="220" y1="138" x2="220" y2="150" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
-        <line x1="180" y1="110" x2="192" y2="110" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
-        <line x1="248" y1="110" x2="260" y2="110" stroke="#22d3ee" stroke-width="1.5" opacity=".6"/>
-        <line x1="192" y1="82" x2="200" y2="90" stroke="#22d3ee" stroke-width="1" opacity=".4"/>
-        <line x1="248" y1="82" x2="240" y2="90" stroke="#22d3ee" stroke-width="1" opacity=".4"/>
-        <line x1="192" y1="138" x2="200" y2="130" stroke="#22d3ee" stroke-width="1" opacity=".4"/>
-        <line x1="248" y1="138" x2="240" y2="130" stroke="#22d3ee" stroke-width="1" opacity=".4"/>
-        <!-- Pupil -->
-        <circle cx="220" cy="110" r="16" fill="#020917"/>
-        <circle cx="220" cy="110" r="12" fill="#06b6d4" opacity=".9" filter="url(#glow)" class="eye-pulse"/>
-        <circle cx="225" cy="105" r="3.5" fill="#fff" opacity=".7"/>
-        <!-- Scan line -->
-        <line x1="70" y1="110" x2="370" y2="110" stroke="#06b6d4" stroke-width=".5" opacity=".15"/>
-        <!-- HUD overlays -->
-        <rect x="10" y="88" width="88" height="44" rx="6" fill="rgba(6,182,212,.07)" stroke="rgba(6,182,212,.2)" stroke-width="1"/>
-        <text x="18" y="106" font-family="monospace" font-size="8" fill="#22d3ee" opacity=".7">REACT TIME</text>
-        <text x="18" y="122" font-family="'Orbitron',monospace" font-size="14" font-weight="700" fill="#06b6d4" filter="url(#softglow)">187ms</text>
-        <rect x="342" y="88" width="88" height="44" rx="6" fill="rgba(6,182,212,.07)" stroke="rgba(6,182,212,.2)" stroke-width="1"/>
-        <text x="350" y="106" font-family="monospace" font-size="8" fill="#22d3ee" opacity=".7">ACCURACY</text>
-        <text x="350" y="122" font-family="'Orbitron',monospace" font-size="14" font-weight="700" fill="#06b6d4" filter="url(#softglow)">94.7%</text>
-        <!-- Bottom label -->
-        <text x="220" y="210" font-family="'Orbitron',monospace" font-size="10" font-weight="700" fill="#22d3ee" letter-spacing="4" text-anchor="middle" opacity=".7">PRAISEVISION ACTIVE</text>
-      </svg>
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<div class="stats">
-  <div class="stat"><span class="stat-num">187ms</span><span class="stat-lbl">Avg Reaction Gain</span></div>
-  <div class="stat"><span class="stat-num">94%</span><span class="stat-lbl">Aim Accuracy Boost</span></div>
-  <div class="stat"><span class="stat-num">6K+</span><span class="stat-lbl">Players Trained</span></div>
-  <div class="stat"><span class="stat-num">$6</span><span class="stat-lbl">One-Time Price</span></div>
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mob-nav">
+  <a onclick="go('home');toggleMenu()">Home</a>
+  <a onclick="go('products');toggleMenu()">Products</a>
+  <a onclick="go('about');toggleMenu()">About</a>
+  <a onclick="go('faq');toggleMenu()">FAQ</a>
+  <a onclick="go('contact');toggleMenu()">Contact</a>
+  <a onclick="go('dashboard');toggleMenu()">Dashboard</a>
 </div>
 
-<!-- FEATURES -->
-<section id="features">
+<!-- ============================================================
+     HOME PAGE
+============================================================ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-wrap">
+      <div class="hero-content">
+        <div class="hero-pill"><span class="p-dot"></span>Premium Fortnite Arsenal</div>
+        <h1 class="xl">
+          <span class="line">Level Up Your</span>
+          <span class="line g-text glow-anim">Game Forever</span>
+        </h1>
+        <p class="hero-p">PraiseJug's Ware delivers elite training tools, sensitivity optimizers, and performance utilities built for Fortnite players who play to win.</p>
+        <div class="hero-btns">
+          <button class="btn btn-primary btn-lg" onclick="go('products')">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="currentColor"><path d="M7.5 0L9.3 5.5H15L10.4 8.9L12.2 14.3L7.5 11L2.8 14.3L4.6 8.9L0 5.5H5.7L7.5 0Z"/></svg>
+            Explore Products
+          </button>
+          <button class="btn btn-secondary btn-lg" onclick="go('about')">Our Story</button>
+        </div>
+        <div class="hero-stats">
+          <div><div class="st-val g-text">14K+</div><div class="st-lbl">Active Players</div></div>
+          <div><div class="st-val g-text">7</div><div class="st-lbl">Premium Tools</div></div>
+          <div><div class="st-val g-text">99%</div><div class="st-lbl">Satisfaction</div></div>
+          <div><div class="st-val g-text">24/7</div><div class="st-lbl">Support</div></div>
+        </div>
+      </div>
+      <div class="hero-vis float">
+        <div class="hero-img-wrap">
+          <!-- ForgeGUI-inspired hero banner -->
+          <svg viewBox="0 0 540 320" xmlns="http://www.w3.org/2000/svg" class="hero-bg-img" style="height:420px;width:100%">
+            <defs>
+              <linearGradient id="hbg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#07050f"/><stop offset="60%" stop-color="#0d0824"/><stop offset="100%" stop-color="#060c1a"/></linearGradient>
+              <radialGradient id="hs1" cx="30%" cy="25%" r="50%"><stop offset="0%" stop-color="#7c3aed" stop-opacity=".35"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+              <radialGradient id="hs2" cx="75%" cy="70%" r="45%"><stop offset="0%" stop-color="#2563eb" stop-opacity=".28"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+              <radialGradient id="hs3" cx="55%" cy="45%" r="30%"><stop offset="0%" stop-color="#a855f7" stop-opacity=".12"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+              <filter id="hglow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <filter id="hglow2"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <rect width="540" height="320" fill="url(#hbg)"/>
+            <rect width="540" height="320" fill="url(#hs1)"/>
+            <rect width="540" height="320" fill="url(#hs2)"/>
+            <rect width="540" height="320" fill="url(#hs3)"/>
+            <!-- grid -->
+            <g opacity=".06" stroke="#a855f7" stroke-width=".6">
+              <line x1="0" y1="64" x2="540" y2="64"/><line x1="0" y1="128" x2="540" y2="128"/>
+              <line x1="0" y1="192" x2="540" y2="192"/><line x1="0" y1="256" x2="540" y2="256"/>
+              <line x1="108" y1="0" x2="108" y2="320"/><line x1="216" y1="0" x2="216" y2="320"/>
+              <line x1="324" y1="0" x2="324" y2="320"/><line x1="432" y1="0" x2="432" y2="320"/>
+            </g>
+            <!-- storm circle - outer ring -->
+            <circle cx="270" cy="145" r="130" fill="none" stroke="url(#hbg)" stroke-width="1" opacity="0"/>
+            <circle cx="270" cy="145" r="128" fill="none" stroke="#7c3aed" stroke-width="1.5" opacity=".25"/>
+            <circle cx="270" cy="145" r="100" fill="none" stroke="#a855f7" stroke-width="1" opacity=".2"/>
+            <circle cx="270" cy="145" r="75" fill="none" stroke="#8b5cf6" stroke-width="1.5" opacity=".3" filter="url(#hglow)"/>
+            <circle cx="270" cy="145" r="45" fill="rgba(124,58,237,.08)" stroke="#a855f7" stroke-width="2" opacity=".5" filter="url(#hglow)"/>
+            <!-- center glow -->
+            <circle cx="270" cy="145" r="20" fill="#7c3aed" opacity=".15" filter="url(#hglow2)"/>
+            <!-- Lightning bolts -->
+            <path d="M 110 60 L 95 100 L 108 100 L 85 150" stroke="#a855f7" stroke-width="1.5" fill="none" opacity=".5" filter="url(#hglow)"/>
+            <path d="M 420 80 L 435 115 L 423 115 L 445 160" stroke="#60a5fa" stroke-width="1.5" fill="none" opacity=".45" filter="url(#hglow)"/>
+            <!-- HUD elements -->
+            <rect x="20" y="20" width="110" height="55" rx="6" fill="rgba(124,58,237,.12)" stroke="rgba(124,58,237,.35)" stroke-width="1"/>
+            <text x="30" y="38" font-family="monospace" font-size="9" fill="#a855f7" opacity=".9">STORM EYE</text>
+            <text x="28" y="58" font-family="'Orbitron',monospace" font-size="16" font-weight="800" fill="#c084fc" filter="url(#hglow)">ACTIVE</text>
+            <rect x="410" y="20" width="110" height="55" rx="6" fill="rgba(37,99,235,.12)" stroke="rgba(37,99,235,.35)" stroke-width="1"/>
+            <text x="420" y="38" font-family="monospace" font-size="9" fill="#60a5fa" opacity=".9">ELIMINATIONS</text>
+            <text x="440" y="58" font-family="'Orbitron',monospace" font-size="20" font-weight="900" fill="#93c5fd" filter="url(#hglow)">17</text>
+            <!-- Floating particles -->
+            <circle cx="80" cy="200" r="2" fill="#a855f7" opacity=".6"/>
+            <circle cx="160" cy="260" r="1.5" fill="#60a5fa" opacity=".5"/>
+            <circle cx="380" cy="230" r="2" fill="#a855f7" opacity=".5"/>
+            <circle cx="460" cy="170" r="1.5" fill="#60a5fa" opacity=".6"/>
+            <circle cx="310" cy="280" r="2" fill="#8b5cf6" opacity=".4"/>
+            <circle cx="140" cy="80" r="1.5" fill="#60a5fa" opacity=".5"/>
+            <circle cx="490" cy="90" r="2" fill="#a855f7" opacity=".4"/>
+            <!-- brand watermark -->
+            <text x="270" y="145" text-anchor="middle" font-family="'Orbitron',monospace" font-size="13" font-weight="900" fill="rgba(168,85,247,.18)" letter-spacing="6">PRAISEJUG'S WARE</text>
+          </svg>
+          <div class="hero-img-overlay">
+            <div class="hc-head" style="background:rgba(6,6,9,.5);backdrop-filter:blur(12px);border-radius:10px;padding:10px 16px;margin-bottom:12px">
+              <div class="hc-dots"><span></span><span></span><span></span></div>
+              <div class="hc-title">PRAISEJUG'S WARE // SUITE v3.1</div>
+            </div>
+            <div class="ppi-grid" id="hero-ppi-grid" style="grid-template-columns:1fr 1fr"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="chip">Why Choose Us</div>
+        <h2 class="lg">Built for <span class="g-text">Champions</span></h2>
+        <p>Everything you need to reach the top — engineered by elite players, for elite players.</p>
+      </div>
+      <div class="feat-grid">
+        <div class="card card-glow feat-card reveal">
+          <div class="feat-icon" style="background:rgba(124,58,237,.18)">⚡</div>
+          <h3>Instant Improvement</h3>
+          <p>Our tools are designed to show measurable results within your first session. Data-driven training that actually moves the needle.</p>
+        </div>
+        <div class="card card-glow feat-card reveal">
+          <div class="feat-icon" style="background:rgba(37,99,235,.18)">🎯</div>
+          <h3>Pro-Level Precision</h3>
+          <p>Used by top-ranked players worldwide. Our algorithms are trained on thousands of hours of competitive gameplay data.</p>
+        </div>
+        <div class="card card-glow feat-card reveal">
+          <div class="feat-icon" style="background:rgba(16,185,129,.18)">🔒</div>
+          <h3>Always Safe</h3>
+          <p>100% external tools — no game injection, no risk to your account. Train smarter, not harder, while staying fully compliant.</p>
+        </div>
+        <div class="card card-glow feat-card reveal">
+          <div class="feat-icon" style="background:rgba(245,158,11,.18)">📊</div>
+          <h3>Deep Analytics</h3>
+          <p>Track every metric that matters. See your progress over time with beautiful dashboards and actionable insights.</p>
+        </div>
+        <div class="card card-glow feat-card reveal">
+          <div class="feat-icon" style="background:rgba(236,72,153,.18)">🔄</div>
+          <h3>Free Lifetime Updates</h3>
+          <p>Fortnite changes every season — your tools keep up. All products include free updates as long as we support them.</p>
+        </div>
+        <div class="card card-glow feat-card reveal">
+          <div class="feat-icon" style="background:rgba(99,102,241,.18)">💬</div>
+          <h3>Community First</h3>
+          <p>Access an exclusive Discord with fellow players, patch notes, and direct feedback channels to our dev team.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED PRODUCTS -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="chip">Our Products</div>
+        <h2 class="lg">The Full <span class="g-text">Arsenal</span></h2>
+        <p>Seven powerful tools, one ecosystem. Mix and match to build your perfect setup.</p>
+      </div>
+      <div class="prod-grid" id="home-prod-grid"></div>
+      <div style="text-align:center;margin-top:12px">
+        <button class="btn btn-secondary btn-lg" onclick="go('products')">View All Products →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="chip">Testimonials</div>
+        <h2 class="lg">Trusted by <span class="g-text">Winners</span></h2>
+        <p>Thousands of players have transformed their game with PraiseJug's Ware.</p>
+      </div>
+      <div class="test-grid">
+        <div class="card test-card reveal">
+          <div class="test-stars">★★★★★</div>
+          <p class="test-text">"PraiseDragg completely changed how I edit. I went from struggling with 50ms drag edits to hitting them consistently in under 2 weeks. Genuinely the best investment I've made for my game."</p>
+          <div class="test-author">
+            <div class="test-av">xV</div>
+            <div><div class="test-name">xVortexFN</div><div class="test-handle">@xvortexfn · Fortnite Pro</div></div>
+          </div>
+        </div>
+        <div class="card test-card reveal">
+          <div class="test-stars">★★★★★</div>
+          <p class="test-text">"PraiseAim identified exactly why I was losing gunfights. Turned out my micro-adjustments were off by 12%. Fixed it in 3 sessions. Jumped from Silver to Diamond in one season."</p>
+          <div class="test-author">
+            <div class="test-av">SR</div>
+            <div><div class="test-name">StormRaiderFN</div><div class="test-handle">@stormraiderfn · Diamond Ranked</div></div>
+          </div>
+        </div>
+        <div class="card test-card reveal">
+          <div class="test-stars">★★★★★</div>
+          <p class="test-text">"PraiseBuild is simply the best building training tool I've used. The 90s speed tracker alone is worth the price. My box fights went from 60% to 85% win rate. Insane value."</p>
+          <div class="test-author">
+            <div class="test-av">QB</div>
+            <div><div class="test-name">QuantumBuilderFN</div><div class="test-handle">@quantumbuilder · Top 500 Builder</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="section" style="padding-top:0">
+    <div class="container">
+      <div class="cta-banner reveal">
+        <h2 class="lg">Ready to <span class="g-text">Dominate?</span></h2>
+        <p>Join 14,000+ players already using PraiseJug's Ware to climb the ranks.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-primary btn-lg" onclick="go('products')">Browse All Tools</button>
+          <button class="btn btn-secondary btn-lg" onclick="go('dashboard')">Create Account</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============================================================
+     PRODUCTS PAGE
+============================================================ -->
+<div id="page-products" class="page">
   <div class="container">
-    <div class="section-label">What You Get</div>
-    <h2 class="section-title">Every Tool You Need to <span class="accent">See Further</span></h2>
-    <p class="section-sub">Six precision-built training modules that rewire how you read the battlefield.</p>
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">&#127919;</div>
-        <div class="feature-name">Visual Awareness Drills</div>
-        <div class="feature-desc">Structured exercises that train your eyes to scan the full field - spots enemies faster, edges, and high-ground threats before they act.</div>
+    <div class="prod-header">
+      <div class="section-head">
+        <div class="chip">Digital Store</div>
+        <h2 class="lg">PraiseJug's <span class="g-text">Arsenal</span></h2>
+        <p>Seven premium tools engineered to give you the edge in every lobby.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#9889;</div>
-        <div class="feature-name">Reaction Time Measurement</div>
-        <div class="feature-desc">Track your raw reaction speed with precision benchmarks. Know your baseline, then crush it with progressive difficulty tiers.</div>
+      <div class="prod-filter">
+        <button class="f-btn active" onclick="filterProds(this,'all')">All Products</button>
+        <button class="f-btn" onclick="filterProds(this,'training')">Training</button>
+        <button class="f-btn" onclick="filterProds(this,'optimization')">Optimization</button>
+        <button class="f-btn" onclick="filterProds(this,'management')">Management</button>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">ð®</div>
-        <div class="feature-name">Enemy Movement Prediction</div>
-        <div class="feature-desc">Pattern-recognition training that teaches you to read enemy edit paths, build rotations, and third-party opportunities a second early.</div>
+    </div>
+    <div class="prod-grid" id="full-prod-grid"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PRODUCT DETAIL PAGE
+============================================================ -->
+<div id="page-product-detail" class="page">
+  <div class="container">
+    <div id="pd-content"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ABOUT PAGE
+============================================================ -->
+<div id="page-about" class="page">
+  <div class="container">
+    <div class="about-hero reveal">
+      <div class="section-head">
+        <div class="chip">Our Story</div>
+        <h2 class="lg">Built by Players, <span class="g-text">for Players</span></h2>
+        <p>PraiseJug's Ware was founded by competitive Fortnite players who were tired of guessing their way to improvement.</p>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128065;</div>
-        <div class="feature-name">Peripheral Vision Training</div>
-        <div class="feature-desc">Expand your visual field with flicker and wide-view drills. See threats in your periphery before they enter your crosshair range.</div>
+    </div>
+    <div class="about-story-grid">
+      <div class="about-vis reveal">
+        <svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="ag1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient>
+            <linearGradient id="ag2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#2563eb"/></linearGradient>
+          </defs>
+          <!-- Hexagon grid -->
+          <polygon points="150,30 200,57 200,114 150,141 100,114 100,57" fill="rgba(124,58,237,.08)" stroke="url(#ag1)" stroke-width="1.5"/>
+          <polygon points="150,159 200,186 200,243 150,270 100,243 100,186" fill="rgba(37,99,235,.08)" stroke="url(#ag2)" stroke-width="1.5"/>
+          <polygon points="90,94 140,121 140,178 90,205 40,178 40,121" fill="rgba(168,85,247,.06)" stroke="rgba(168,85,247,.3)" stroke-width="1"/>
+          <polygon points="210,94 260,121 260,178 210,205 160,178 160,121" fill="rgba(96,165,250,.06)" stroke="rgba(96,165,250,.3)" stroke-width="1"/>
+          <!-- Center symbol -->
+          <circle cx="150" cy="150" r="40" fill="rgba(124,58,237,.15)" stroke="url(#ag1)" stroke-width="2"/>
+          <text x="150" y="158" text-anchor="middle" font-family="'Orbitron',monospace" font-weight="900" font-size="22" fill="url(#ag1)">PJ</text>
+          <!-- Orbiting dots -->
+          <circle cx="150" cy="105" r="4" fill="#a855f7" opacity=".8"/>
+          <circle cx="150" cy="195" r="4" fill="#60a5fa" opacity=".8"/>
+          <circle cx="109" cy="127" r="3" fill="#a855f7" opacity=".5"/>
+          <circle cx="191" cy="127" r="3" fill="#60a5fa" opacity=".5"/>
+          <circle cx="109" cy="173" r="3" fill="#7c3aed" opacity=".5"/>
+          <circle cx="191" cy="173" r="3" fill="#2563eb" opacity=".5"/>
+          <!-- Lines -->
+          <line x1="150" y1="109" x2="150" y2="110" stroke="url(#ag1)" stroke-width="1" opacity=".4"/>
+        </svg>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#127752;</div>
-        <div class="feature-name">Color & Contrast Optimization</div>
-        <div class="feature-desc">Custom color-profile guides calibrated for Fortnite's visual environment. Pop enemies from their background at every lighting condition.</div>
+      <div class="reveal" style="padding:20px 0">
+        <h2 class="md" style="margin-bottom:20px">Our <span class="g-text">Mission</span></h2>
+        <p style="color:var(--dim);line-height:1.9;margin-bottom:18px">In 2022, a group of competitive Fortnite players recognized a gap in the market: there were plenty of "aim trainers" but nothing specifically engineered for the unique mechanics of Fortnite — drag editing, building combos, piece control, and high-sensitivity play.</p>
+        <p style="color:var(--dim);line-height:1.9;margin-bottom:28px">PraiseJug's Ware was born from that frustration. We spent 18 months building, testing, and iterating with real competitive players before launching our first tool. Today, we're proud to offer the most comprehensive Fortnite-specific training suite on the market.</p>
+        <div style="display:flex;flex-direction:column;gap:11px">
+          <div style="display:flex;align-items:center;gap:10px;font-size:.9rem"><span style="color:#34d399;font-size:.8rem">✓</span>Founded by top 1% Fortnite players</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:.9rem"><span style="color:#34d399;font-size:.8rem">✓</span>Tested with 500+ beta players before launch</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:.9rem"><span style="color:#34d399;font-size:.8rem">✓</span>14,000+ active users across 60+ countries</div>
+          <div style="display:flex;align-items:center;gap:10px;font-size:.9rem"><span style="color:#34d399;font-size:.8rem">✓</span>Dedicated to fair play — zero game injection</div>
+        </div>
       </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#128737;</div>
-        <div class="feature-name">Anti-Flash Training Mode</div>
-        <div class="feature-desc">Condition your eyes to recover instantly from flashbangs and bright ability effects. Stay in the fight when others are still blinking.</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="about-stats">
+      <div class="card as-card reveal"><div class="val g-text">14K+</div><div class="lbl">Active Users</div></div>
+      <div class="card as-card reveal"><div class="val g-text">7</div><div class="lbl">Premium Tools</div></div>
+      <div class="card as-card reveal"><div class="val g-text">60+</div><div class="lbl">Countries</div></div>
+      <div class="card as-card reveal"><div class="val g-text">99%</div><div class="lbl">Satisfaction Rate</div></div>
+    </div>
+
+    <!-- Team -->
+    <div class="section-sm">
+      <div class="section-head reveal"><div class="chip">The Team</div><h2 class="lg">Who We <span class="g-text">Are</span></h2></div>
+      <div class="team-grid">
+        <div class="card team-card reveal">
+          <div class="team-av">JG</div>
+          <h4>JugMaster_G</h4>
+          <div class="team-role">Founder & Lead Developer</div>
+          <p>Top 500 Fortnite player turned developer. Built PraiseDragg from scratch after reaching Elite tier.</p>
+        </div>
+        <div class="card team-card reveal">
+          <div class="team-av">AX</div>
+          <h4>AimXcel</h4>
+          <div class="team-role">Lead Trainer & Product Analyst</div>
+          <p>Former esports coach with 6 years training competitive FPS players. Designed PraiseAim's core algorithm.</p>
+        </div>
+        <div class="card team-card reveal">
+          <div class="team-av">NX</div>
+          <h4>NexaBuild</h4>
+          <div class="team-role">Building Specialist & Product Lead</div>
+          <p>World-class builder and content creator. Architected PraiseBuild and PraiseConfig training modules.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Values -->
+    <div class="cta-banner reveal">
+      <h2 class="lg">Join the <span class="g-text">Movement</span></h2>
+      <p>Thousands of players are already on the journey. Start yours today and see the difference data-driven training makes.</p>
+      <button class="btn btn-primary btn-lg" onclick="go('products')">Get Started Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     FAQ PAGE
+============================================================ -->
+<div id="page-faq" class="page">
+  <div class="container section">
+    <div class="section-head reveal">
+      <div class="chip">Help Center</div>
+      <h2 class="lg">Frequently Asked <span class="g-text">Questions</span></h2>
+      <p>Everything you need to know about PraiseJug's Ware tools.</p>
+    </div>
+    <div class="faq-wrap" id="faq-list"></div>
+    <div style="text-align:center;margin-top:52px" class="reveal">
+      <p style="color:var(--dim);margin-bottom:18px">Still have questions? We're here to help.</p>
+      <button class="btn btn-primary" onclick="go('contact')">Contact Support</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CONTACT PAGE
+============================================================ -->
+<div id="page-contact" class="page">
+  <div class="container section">
+    <div class="section-head reveal">
+      <div class="chip">Get in Touch</div>
+      <h2 class="lg">We're Here to <span class="g-text">Help</span></h2>
+    </div>
+    <div class="contact-grid">
+      <div class="reveal">
+        <h2 class="md" style="margin-bottom:12px">Support &amp; Inquiries</h2>
+        <p>Have a question, found a bug, or want to give feedback? Our team responds within 24 hours. For urgent issues, Discord is fastest.</p>
+        <div class="contact-methods">
+          <div class="cm">
+            <div class="cm-icon" style="background:rgba(124,58,237,.18)">📧</div>
+            <div><div class="cm-lbl">Email</div><div class="cm-val">support@praisejugsware.gg</div></div>
+          </div>
+          <div class="cm">
+            <div class="cm-icon" style="background:rgba(37,99,235,.18)">💬</div>
+            <div><div class="cm-lbl">Discord</div><div class="cm-val">discord.gg/praisejugsware</div></div>
+          </div>
+          <div class="cm">
+            <div class="cm-icon" style="background:rgba(29,161,242,.18)">🐦</div>
+            <div><div class="cm-lbl">Twitter / X</div><div class="cm-val">@PraiseJugsWare</div></div>
+          </div>
+          <div class="cm">
+            <div class="cm-icon" style="background:rgba(16,185,129,.18)">⏱</div>
+            <div><div class="cm-lbl">Response Time</div><div class="cm-val">Under 24 hours</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card contact-form-card reveal">
+        <h3 style="font-size:1.1rem;margin-bottom:22px">Send a Message</h3>
+        <div class="form-row">
+          <div class="fg"><label>First Name</label><input type="text" placeholder="Your first name"></div>
+          <div class="fg"><label>Last Name</label><input type="text" placeholder="Your last name"></div>
+        </div>
+        <div class="fg"><label>Email Address</label><input type="email" placeholder="you@example.com"></div>
+        <div class="fg">
+          <label>Subject</label>
+          <select>
+            <option value="">Select a topic...</option>
+            <option>General Inquiry</option>
+            <option>Technical Support</option>
+            <option>Billing Question</option>
+            <option>Feature Request</option>
+            <option>Partnership</option>
+            <option>Bug Report</option>
+          </select>
+        </div>
+        <div class="fg"><label>Message</label><textarea placeholder="Describe your question or issue in detail..."></textarea></div>
+        <button class="btn btn-primary w-full" onclick="submitContact()">Send Message →</button>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- HOW IT WORKS -->
-<section id="how">
+<!-- ============================================================
+     DASHBOARD PAGE
+============================================================ -->
+<div id="page-dashboard" class="page">
   <div class="container">
-    <div class="section-label">Process</div>
-    <h2 class="section-title">How <span class="accent">PraiseVision</span> Works</h2>
-    <p class="section-sub">From purchase to in-game edge in under ten minutes.</p>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-content">
-          <h3>Purchase Once</h3>
-          <p>Pay $6 - a single flat charge, no subscriptions, no hidden tiers. Instant delivery to your email with a secure download link.</p>
+    <!-- Login Form -->
+    <div id="login-view">
+      <div class="card login-card">
+        <div style="text-align:center;margin-bottom:22px">
+          <svg width="52" height="52" viewBox="0 0 38 38" fill="none"><defs><linearGradient id="lg-dash" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs><polygon points="19,2 35,10 35,28 19,36 3,28 3,10" fill="rgba(124,58,237,.12)" stroke="url(#lg-dash)" stroke-width="1.5"/><text x="19" y="22" text-anchor="middle" font-family="'Orbitron',monospace" font-weight="900" font-size="11" fill="url(#lg-dash)">PJ</text></svg>
+        </div>
+        <h2>Welcome Back</h2>
+        <p class="sub">Sign in to access your PraiseJug's Ware dashboard</p>
+        <div class="fg"><label>Email Address</label><input type="email" placeholder="you@example.com" id="login-email"></div>
+        <div class="fg"><label>Password</label><input type="password" placeholder="••••••••" id="login-pass"></div>
+        <button class="btn btn-primary w-full" style="margin-bottom:14px" onclick="doLogin()">Sign In</button>
+        <p style="text-align:center;font-size:.8rem;color:var(--muted)">Don't have an account? <a onclick="doLogin()" style="color:var(--purple-l);cursor:pointer">Create one free</a></p>
+      </div>
+    </div>
+    <!-- Dashboard View -->
+    <div class="dash-layout" id="dash-view">
+      <div class="dash-side">
+        <div class="dash-nav-card">
+          <div class="dn-user">
+            <div class="dn-av">PJ</div>
+            <div><div class="dn-name">PraisePlayer</div><div class="dn-tier">Pro Tier</div></div>
+          </div>
+          <ul class="dn-nav">
+            <li><a onclick="showPanel('overview')" class="active">📊 Overview</a></li>
+            <li><a onclick="showPanel('orders')">🛒 My Orders</a></li>
+            <li><a onclick="showPanel('downloads')">⬇️ Downloads</a></li>
+            <li><a onclick="showPanel('settings')">⚙️ Settings</a></li>
+            <li><a onclick="doLogout()" style="color:#f87171">🚪 Sign Out</a></li>
+          </ul>
         </div>
       </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-content">
-          <h3>Run Your Baseline</h3>
-          <p>Open the Visual Baseline module and complete your first reaction and perception assessment. Takes 4 minutes. Saves your score for tracking.</p>
+      <div class="dash-content">
+        <!-- Overview Panel -->
+        <div class="dash-panel active" id="panel-overview">
+          <h2 class="md" style="margin-bottom:22px">Dashboard <span class="g-text">Overview</span></h2>
+          <div class="d-stats">
+            <div class="ds"><div class="ds-lbl">Active Products</div><div class="ds-val g-text">3</div></div>
+            <div class="ds"><div class="ds-lbl">Total Spent</div><div class="ds-val g-text">$84.97</div></div>
+            <div class="ds"><div class="ds-lbl">Days Active</div><div class="ds-val g-text">47</div></div>
+            <div class="ds"><div class="ds-lbl">Skill Score</div><div class="ds-val g-gold">9,420</div></div>
+          </div>
+          <div class="card" style="padding:24px;margin-bottom:22px">
+            <h3 style="font-size:1rem;margin-bottom:18px">Recent Activity</h3>
+            <div style="display:flex;flex-direction:column;gap:11px">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:11px"><div style="width:34px;height:34px;border-radius:8px;background:rgba(124,58,237,.2);display:flex;align-items:center;justify-content:center;font-size:.85rem">🎯</div><div><div style="font-size:.875rem;font-weight:600">PraiseAim Session</div><div style="font-size:.75rem;color:var(--muted)">2 hours ago</div></div></div>
+                <span class="badge badge-green">+120 pts</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)">
+                <div style="display:flex;align-items:center;gap:11px"><div style="width:34px;height:34px;border-radius:8px;background:rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;font-size:.85rem">🏗️</div><div><div style="font-size:.875rem;font-weight:600">PraiseBuild Practice</div><div style="font-size:.75rem;color:var(--muted)">Yesterday</div></div></div>
+                <span class="badge badge-blue">+85 pts</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0">
+                <div style="display:flex;align-items:center;gap:11px"><div style="width:34px;height:34px;border-radius:8px;background:rgba(168,85,247,.2);display:flex;align-items:center;justify-content:center;font-size:.85rem">✏️</div><div><div style="font-size:.875rem;font-weight:600">PraiseDragg Drills</div><div style="font-size:.75rem;color:var(--muted)">2 days ago</div></div></div>
+                <span class="badge badge-purple">+200 pts</span>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="padding:24px">
+            <h3 style="font-size:1rem;margin-bottom:16px">Upgrade Your Arsenal</h3>
+            <p style="font-size:.875rem;color:var(--dim);margin-bottom:16px">You have 4 tools you haven't tried yet. Unlock your full potential.</p>
+            <button class="btn btn-primary" onclick="go('products')">Browse Remaining Tools</button>
+          </div>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-content">
-          <h3>Follow the Daily Protocol</h3>
-          <p>PraiseVision generates a 10-minute daily drill sequence based on your weak points. No guesswork - just log in, run the session, and improve.</p>
+        <!-- Orders Panel -->
+        <div class="dash-panel" id="panel-orders">
+          <h2 class="md" style="margin-bottom:22px">My <span class="g-text">Orders</span></h2>
+          <div class="card" style="overflow:hidden">
+            <table class="orders-tbl">
+              <thead><tr><th>Product</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+              <tbody>
+                <tr><td>PraiseDragg — Pro</td><td>Nov 1, 2026</td><td>$29.99</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>PraiseAim — Pro</td><td>Oct 15, 2026</td><td>$24.99</td><td><span class="badge badge-green">Active</span></td></tr>
+                <tr><td>PraiseBuild — Pro</td><td>Sep 30, 2026</td><td>$34.99</td><td><span class="badge badge-green">Active</span></td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div class="step-content">
-          <h3>Feel It In-Game</h3>
-          <p>Within 5â7 sessions most players report noticeably faster target acquisition and fewer "didn't see them" deaths. Vision is a skill. Train it.</p>
+        <!-- Downloads Panel -->
+        <div class="dash-panel" id="panel-downloads">
+          <h2 class="md" style="margin-bottom:22px">My <span class="g-text">Downloads</span></h2>
+          <div class="dl-items">
+            <div class="dl-item">
+              <div class="dl-item-info"><div class="dl-item-icon" style="background:rgba(124,58,237,.2)">✏️</div><div><div class="dl-item-name">PraiseDragg v2.4.1</div><div class="dl-item-ver">Updated Nov 10, 2026 · 48 MB</div></div></div>
+              <button class="btn btn-primary btn-sm" onclick="showToast('⬇️ Download started!','success')">Download</button>
+            </div>
+            <div class="dl-item">
+              <div class="dl-item-info"><div class="dl-item-icon" style="background:rgba(220,38,38,.2)">🎯</div><div><div class="dl-item-name">PraiseAim v1.9.3</div><div class="dl-item-ver">Updated Nov 8, 2026 · 62 MB</div></div></div>
+              <button class="btn btn-primary btn-sm" onclick="showToast('⬇️ Download started!','success')">Download</button>
+            </div>
+            <div class="dl-item">
+              <div class="dl-item-info"><div class="dl-item-icon" style="background:rgba(5,150,105,.2)">🏗️</div><div><div class="dl-item-name">PraiseBuild v3.0.0</div><div class="dl-item-ver">Updated Nov 12, 2026 · 55 MB</div></div></div>
+              <button class="btn btn-primary btn-sm" onclick="showToast('⬇️ Download started!','success')">Download</button>
+            </div>
+            <div class="dl-item">
+              <div class="dl-item-info"><div class="dl-item-icon" style="background:rgba(0,255,65,.12)">💻</div><div><div class="dl-item-name">PraiseTweaks v1.0.0</div><div class="dl-item-ver">Updated Nov 17, 2026 · 3 KB</div></div></div>
+              <button class="btn btn-primary btn-sm" onclick="downloadPraiseTweaks()">Download</button>
+            </div>
+          </div>
+        </div>
+        <!-- Settings Panel -->
+        <div class="dash-panel" id="panel-settings">
+          <h2 class="md" style="margin-bottom:22px">Account <span class="g-text">Settings</span></h2>
+          <div class="card" style="padding:28px;margin-bottom:20px">
+            <h3 style="font-size:1rem;margin-bottom:18px">Profile Information</h3>
+            <div class="form-row" style="margin-bottom:14px">
+              <div class="fg"><label>Username</label><input type="text" value="PraisePlayer"></div>
+              <div class="fg"><label>Email</label><input type="email" value="player@email.com"></div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="showToast('✅ Profile updated!','success')">Save Changes</button>
+          </div>
+          <div class="card" style="padding:28px">
+            <h3 style="font-size:1rem;margin-bottom:18px">Security</h3>
+            <div class="fg" style="margin-bottom:14px"><label>New Password</label><input type="password" placeholder="••••••••"></div>
+            <div class="fg" style="margin-bottom:14px"><label>Confirm Password</label><input type="password" placeholder="••••••••"></div>
+            <button class="btn btn-secondary btn-sm" onclick="showToast('✅ Password updated!','success')">Change Password</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- TESTIMONIALS -->
-<section id="reviews">
-  <div class="container">
-    <div class="section-label">Players Say</div>
-    <h2 class="section-title">Real Results, <span class="accent">Real Players</span></h2>
-    <p class="section-sub">From casual grinders to competitive ranked - PraiseVision delivers.</p>
-    <div class="testimonials-grid">
-      <div class="tcard">
-        <div class="tcard-stars">âââââ</div>
-        <div class="tcard-text">"Honestly didn't think a $6 tool would do much. Week later my reaction benchmark dropped from 310ms to 241ms. That's insane for the price."</div>
-        <div class="tcard-author"><div class="tcard-avatar">JX</div><div><div class="tcard-name">JaxGrindz</div><div class="tcard-sub">Ranked Solo &middot; Season 12</div></div></div>
-      </div>
-      <div class="tcard">
-        <div class="tcard-stars">âââââ</div>
-        <div class="tcard-text">"The peripheral training changed how I rotate. I catch box rushes way earlier now. My squad literally asked what happened to my game sense."</div>
-        <div class="tcard-author"><div class="tcard-avatar">NK</div><div><div class="tcard-name">NovakFN</div><div class="tcard-sub">Competitive Duos &middot; 8K Elims</div></div></div>
-      </div>
-      <div class="tcard">
-        <div class="tcard-stars">âââââ</div>
-        <div class="tcard-text">"Color optimization guide alone is worth twice the price. I literally tuned my monitor settings for the first time and the difference is wild."</div>
-        <div class="tcard-author"><div class="tcard-avatar">SV</div><div><div class="tcard-name">SylviaVibes</div><div class="tcard-sub">Content Creator &middot; 22K Subs</div></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section" id="buy">
-  <div class="container">
-    <div class="section-label">Get Started</div>
-    <h2 class="section-title">One Price. <span class="accent">Everything Included.</span></h2>
-    <p class="section-sub" style="margin:0 auto 40px">No tiers, no upsells, no monthly fees. Pay once and train forever.</p>
-
-    <div class="cta-price-box">
-      <div>
-        <div class="cta-price-label">PraiseVision</div>
-        <div class="cta-price-amount"><sup>$</sup>6</div>
-      </div>
-      <div style="width:1px;height:60px;background:rgba(6,182,212,.2)"></div>
-      <div>
-        <div class="cta-price-note">One-Time Purchase</div>
-        <div style="font-size:.8rem;color:var(--muted);margin-top:4px">All 6 training modules</div>
-        <div style="font-size:.8rem;color:var(--muted)">Instant access &middot; No subscription</div>
-      </div>
-    </div>
-
-    <div class="cta-features">
-      <div class="cta-feat">Visual Awareness Drills</div>
-      <div class="cta-feat">Reaction Measurement</div>
-      <div class="cta-feat">Enemy Prediction Training</div>
-      <div class="cta-feat">Peripheral Vision Module</div>
-      <div class="cta-feat">Color Optimization Guide</div>
-      <div class="cta-feat">Anti-Flash Training</div>
-    </div>
-
-    <button class="btn btn-primary" style="font-size:13px;padding:18px 48px" onclick="openModal()">&#128065; &nbsp;Buy PraiseVision - $6</button>
-  </div>
-</section>
-
-<!-- FOOTER -->
+<!-- ============================================================
+     FOOTER
+============================================================ -->
 <footer>
-  <div class="footer-brand">PraiseJug's Ware</div>
-  <div class="footer-text">PraiseVision is a product of PraiseJug's Ware &nbsp;&middot;&nbsp; <a href="#" class="footer-link">praisejugsware.com</a> &nbsp;&middot;&nbsp; All rights reserved &copy; 2024</div>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="logo" onclick="go('home')" style="margin-bottom:14px">
+          <svg width="32" height="32" viewBox="0 0 38 38" fill="none"><defs><linearGradient id="flg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs><polygon points="19,2 35,10 35,28 19,36 3,28 3,10" fill="rgba(124,58,237,.12)" stroke="url(#flg)" stroke-width="1.5"/><text x="19" y="22" text-anchor="middle" font-family="'Orbitron',monospace" font-weight="900" font-size="11" fill="url(#flg)">PJ</text></svg>
+          <div class="logo-text">PraiseJug's<br><em>Ware</em></div>
+        </div>
+        <p>Premium Fortnite digital tools engineered for players who demand excellence. Train smarter, build faster, win more.</p>
+        <div class="socials">
+          <div class="soc" title="Twitter">𝕏</div>
+          <div class="soc" title="Discord">💬</div>
+          <div class="soc" title="YouTube">▶</div>
+          <div class="soc" title="TikTok">♪</div>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>Products</h4>
+        <ul>
+          <li><a onclick="openProduct('praisedragg')">PraiseDragg</a></li>
+          <li><a onclick="openProduct('praiseaim')">PraiseAim</a></li>
+          <li><a onclick="openProduct('praisevision')">PraiseVision</a></li>
+          <li><a onclick="openProduct('praisebuild')">PraiseBuild</a></li>
+          <li><a onclick="openProduct('praisetweaks')">PraiseTweaks</a></li>
+          <li><a onclick="openProduct('praiseconfig')">PraiseConfig</a></li>
+          <li><a onclick="openProduct('praiseperformance')">PraisePerformance</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a onclick="go('about')">About Us</a></li>
+          <li><a onclick="go('contact')">Contact</a></li>
+          <li><a onclick="go('faq')">FAQ</a></li>
+          <li><a>Blog</a></li>
+          <li><a>Careers</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a>Privacy Policy</a></li>
+          <li><a>Terms of Service</a></li>
+          <li><a>Refund Policy</a></li>
+          <li><a>EULA</a></li>
+          <li><a>Cookie Settings</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <p>© 2026 PraiseJug's Ware. All rights reserved.</p>
+      <p>Not affiliated with Epic Games, Inc.</p>
+    </div>
+  </div>
 </footer>
 
-<!-- PURCHASE MODAL -->
-<div class="modal-overlay" id="purchaseModal" onclick="closeModalOutside(event)">
-  <div class="modal modal-wrap">
-    <button class="modal-close" onclick="closeModal()">â</button>
+</div><!-- end #app -->
 
-    <!-- STEP 1: Buy -->
-    <div id="purchaseForm">
-      <div class="modal-title">&#128065; &nbsp;Get PraiseVision</div>
-      <div class="modal-sub">Pay $6 via PayPal, then join our Discord with proof to receive your access key.</div>
-      <div class="modal-price-row">
-        <div class="modal-price">$6</div>
-        <div class="modal-price-label">one-time</div>
-      </div>
-      <div style="background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.15);border-radius:10px;padding:16px 20px;margin-bottom:24px">
-        <div style="display:flex;flex-direction:column;gap:12px">
-          <div style="display:flex;align-items:center;gap:12px"><div style="min-width:24px;height:24px;border-radius:50%;background:rgba(6,182,212,.2);border:1px solid rgba(6,182,212,.4);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--cyan)">1</div><span style="font-size:.83rem;color:var(--text)">Pay $6 via PayPal below</span></div>
-          <div style="display:flex;align-items:center;gap:12px"><div style="min-width:24px;height:24px;border-radius:50%;background:rgba(6,182,212,.2);border:1px solid rgba(6,182,212,.4);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--cyan)">2</div><span style="font-size:.83rem;color:var(--text)">Join Discord &amp; send receipt + message <span style="font-family:'Orbitron',monospace;font-size:10px;color:var(--cyan2);background:rgba(6,182,212,.1);padding:1px 7px;border-radius:3px">PRAISEVISION</span></span></div>
-          <div style="display:flex;align-items:center;gap:12px"><div style="min-width:24px;height:24px;border-radius:50%;background:rgba(6,182,212,.2);border:1px solid rgba(6,182,212,.4);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--cyan)">3</div><span style="font-size:.83rem;color:var(--text)">Receive your one-time access key &amp; enter it here</span></div>
+<!-- Toast Container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+/* ——————————————————————————————
+   FORGEGUI-INSPIRED PRODUCT ART (inline SVG)
+—————————————————————————————— */
+const PRODUCT_ART = {
+praisedragg:`<svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block">
+<defs>
+  <linearGradient id="dg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#2d1060"/><stop offset="100%" stop-color="#0d2a6e"/></linearGradient>
+  <linearGradient id="dg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient>
+  <filter id="glow1"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="400" height="210" fill="url(#dg1)"/>
+<!-- grid -->
+<g opacity=".12" stroke="#a855f7" stroke-width=".5">
+  <line x1="0" y1="42" x2="400" y2="42"/><line x1="0" y1="84" x2="400" y2="84"/>
+  <line x1="0" y1="126" x2="400" y2="126"/><line x1="0" y1="168" x2="400" y2="168"/>
+  <line x1="80" y1="0" x2="80" y2="210"/><line x1="160" y1="0" x2="160" y2="210"/>
+  <line x1="240" y1="0" x2="240" y2="210"/><line x1="320" y1="0" x2="320" y2="210"/>
+</g>
+<!-- drag edit lines -->
+<g filter="url(#glow1)">
+  <path d="M 60 160 C 120 100, 200 80, 280 50" stroke="url(#dg2)" stroke-width="2.5" fill="none" opacity=".9"/>
+  <path d="M 80 180 C 150 120, 220 90, 310 60" stroke="url(#dg2)" stroke-width="1.5" fill="none" opacity=".6"/>
+  <path d="M 40 140 C 110 90, 190 70, 260 40" stroke="#a855f7" stroke-width="1" fill="none" opacity=".4"/>
+</g>
+<!-- cursor dot -->
+<circle cx="280" cy="50" r="6" fill="#a855f7" filter="url(#glow1)"/>
+<circle cx="280" cy="50" r="12" fill="none" stroke="#a855f7" stroke-width="1.5" opacity=".4"/>
+<!-- edit squares -->
+<rect x="90" y="70" width="22" height="22" rx="4" fill="none" stroke="url(#dg2)" stroke-width="1.5" opacity=".7"/>
+<rect x="175" y="55" width="22" height="22" rx="4" fill="none" stroke="url(#dg2)" stroke-width="1.5" opacity=".7"/>
+<rect x="250" y="40" width="22" height="22" rx="4" fill="#a855f7" fill-opacity=".2" stroke="#a855f7" stroke-width="1.5"/>
+<!-- particles -->
+<circle cx="130" cy="120" r="2" fill="#60a5fa" opacity=".6"/>
+<circle cx="200" cy="90" r="1.5" fill="#a855f7" opacity=".5"/>
+<circle cx="310" cy="130" r="2" fill="#60a5fa" opacity=".4"/>
+<circle cx="50" cy="80" r="1.5" fill="#a855f7" opacity=".6"/>
+<!-- label -->
+<text x="20" y="200" font-family="'Orbitron',monospace" font-size="10" font-weight="700" fill="url(#dg2)" letter-spacing="2" opacity=".9">DRAG EDIT</text>
+</svg>`,
+
+praiseaim:`<svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block">
+<defs>
+  <linearGradient id="ag1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#450a0a"/><stop offset="100%" stop-color="#431407"/></linearGradient>
+  <radialGradient id="ag2" cx="55%" cy="45%" r="40%"><stop offset="0%" stop-color="#ef4444" stop-opacity=".25"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+  <filter id="rglow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="400" height="210" fill="url(#ag1)"/>
+<rect width="400" height="210" fill="url(#ag2)"/>
+<!-- crosshair rings -->
+<circle cx="220" cy="95" r="55" fill="none" stroke="#ef4444" stroke-width="1" opacity=".3"/>
+<circle cx="220" cy="95" r="38" fill="none" stroke="#ef4444" stroke-width="1.5" opacity=".5"/>
+<circle cx="220" cy="95" r="20" fill="none" stroke="#f97316" stroke-width="2" opacity=".7" filter="url(#rglow)"/>
+<circle cx="220" cy="95" r="6" fill="#ef4444" filter="url(#rglow)"/>
+<!-- crosshair lines -->
+<line x1="220" y1="30" x2="220" y2="68" stroke="#ef4444" stroke-width="1.5" opacity=".8"/>
+<line x1="220" y1="122" x2="220" y2="160" stroke="#ef4444" stroke-width="1.5" opacity=".8"/>
+<line x1="155" y1="95" x2="193" y2="95" stroke="#ef4444" stroke-width="1.5" opacity=".8"/>
+<line x1="247" y1="95" x2="285" y2="95" stroke="#ef4444" stroke-width="1.5" opacity=".8"/>
+<!-- heat dots -->
+<circle cx="195" cy="88" r="3" fill="#f97316" opacity=".5"/>
+<circle cx="230" cy="102" r="2" fill="#f87171" opacity=".4"/>
+<circle cx="210" cy="80" r="2.5" fill="#ef4444" opacity=".6"/>
+<!-- stat bars -->
+<g opacity=".8">
+  <rect x="20" y="30" width="60" height="6" rx="3" fill="rgba(255,255,255,.1)"/>
+  <rect x="20" y="30" width="45" height="6" rx="3" fill="#ef4444"/>
+  <text x="20" y="24" font-family="monospace" font-size="9" fill="#f87171">FLICK ACC</text>
+  <rect x="20" y="55" width="60" height="6" rx="3" fill="rgba(255,255,255,.1)"/>
+  <rect x="20" y="55" width="52" height="6" rx="3" fill="#f97316"/>
+  <text x="20" y="49" font-family="monospace" font-size="9" fill="#f87171">TRACKING</text>
+  <rect x="20" y="80" width="60" height="6" rx="3" fill="rgba(255,255,255,.1)"/>
+  <rect x="20" y="80" width="38" height="6" rx="3" fill="#ef4444" opacity=".7"/>
+  <text x="20" y="74" font-family="monospace" font-size="9" fill="#f87171">MICRO ADJ</text>
+</g>
+<text x="20" y="200" font-family="'Orbitron',monospace" font-size="10" font-weight="700" fill="#f87171" letter-spacing="2" opacity=".9">AIM TRAINER</text>
+</svg>`,
+
+praisevision:`<svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block">
+<defs>
+  <linearGradient id="vg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#082032"/><stop offset="100%" stop-color="#0c1a3a"/></linearGradient>
+  <radialGradient id="vg2" cx="55%" cy="45%" r="40%"><stop offset="0%" stop-color="#06b6d4" stop-opacity=".2"/><stop offset="100%" stop-color="transparent"/></radialGradient>
+  <filter id="cglow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="400" height="210" fill="url(#vg1)"/>
+<rect width="400" height="210" fill="url(#vg2)"/>
+<!-- eye shape -->
+<path d="M 130 100 Q 220 40 310 100 Q 220 160 130 100 Z" fill="none" stroke="#06b6d4" stroke-width="2" opacity=".7" filter="url(#cglow)"/>
+<!-- iris -->
+<circle cx="220" cy="100" r="30" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity=".6"/>
+<circle cx="220" cy="100" r="18" fill="rgba(6,182,212,.12)" stroke="#22d3ee" stroke-width="2" filter="url(#cglow)"/>
+<!-- pupil -->
+<circle cx="220" cy="100" r="8" fill="#06b6d4" opacity=".8" filter="url(#cglow)"/>
+<!-- iris detail lines -->
+<line x1="220" y1="72" x2="220" y2="82" stroke="#22d3ee" stroke-width="1" opacity=".5"/>
+<line x1="220" y1="118" x2="220" y2="128" stroke="#22d3ee" stroke-width="1" opacity=".5"/>
+<line x1="192" y1="100" x2="202" y2="100" stroke="#22d3ee" stroke-width="1" opacity=".5"/>
+<line x1="238" y1="100" x2="248" y2="100" stroke="#22d3ee" stroke-width="1" opacity=".5"/>
+<!-- scan lines -->
+<line x1="130" y1="78" x2="310" y2="78" stroke="#06b6d4" stroke-width=".5" opacity=".2"/>
+<line x1="130" y1="90" x2="310" y2="90" stroke="#06b6d4" stroke-width=".5" opacity=".15"/>
+<line x1="130" y1="110" x2="310" y2="110" stroke="#06b6d4" stroke-width=".5" opacity=".15"/>
+<line x1="130" y1="122" x2="310" y2="122" stroke="#06b6d4" stroke-width=".5" opacity=".2"/>
+<!-- reaction time display -->
+<rect x="20" y="80" width="80" height="40" rx="6" fill="rgba(6,182,212,.08)" stroke="rgba(6,182,212,.3)" stroke-width="1"/>
+<text x="30" y="97" font-family="monospace" font-size="8" fill="#22d3ee" opacity=".7">REACT TIME</text>
+<text x="30" y="112" font-family="'Orbitron',monospace" font-size="13" font-weight="700" fill="#06b6d4">187ms</text>
+<text x="20" y="200" font-family="'Orbitron',monospace" font-size="10" font-weight="700" fill="#22d3ee" letter-spacing="2" opacity=".9">VISUAL TRAIN</text>
+</svg>`,
+
+praisebuild:`<svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block">
+<defs>
+  <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#022c22"/><stop offset="100%" stop-color="#052e16"/></linearGradient>
+  <filter id="gglow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="400" height="210" fill="url(#bg1)"/>
+<!-- ground grid -->
+<g opacity=".15" stroke="#10b981" stroke-width=".5">
+  <line x1="0" y1="168" x2="400" y2="168"/><line x1="0" y1="140" x2="400" y2="140"/>
+</g>
+<!-- building structure isometric -->
+<!-- back wall -->
+<polygon points="200,40 300,80 300,160 200,120" fill="rgba(16,185,129,.06)" stroke="#10b981" stroke-width="1.2" opacity=".6"/>
+<!-- left wall -->
+<polygon points="100,80 200,40 200,120 100,160" fill="rgba(16,185,129,.1)" stroke="#10b981" stroke-width="1.2" opacity=".8"/>
+<!-- top face -->
+<polygon points="100,80 200,40 300,80 200,120" fill="rgba(16,185,129,.18)" stroke="#10b981" stroke-width="1.5" filter="url(#gglow)"/>
+<!-- ramp -->
+<polygon points="100,160 200,120 200,160" fill="rgba(52,211,153,.12)" stroke="#34d399" stroke-width="1" opacity=".7"/>
+<!-- glow edges -->
+<line x1="100" y1="80" x2="200" y2="40" stroke="#34d399" stroke-width="2" filter="url(#gglow)" opacity=".8"/>
+<line x1="200" y1="40" x2="300" y2="80" stroke="#34d399" stroke-width="2" filter="url(#gglow)" opacity=".8"/>
+<!-- floating pieces being placed -->
+<rect x="300" y="100" width="30" height="30" rx="3" fill="rgba(16,185,129,.15)" stroke="#10b981" stroke-width="1" opacity=".6"/>
+<rect x="340" y="70" width="30" height="30" rx="3" fill="rgba(52,211,153,.1)" stroke="#34d399" stroke-width="1" opacity=".5"/>
+<!-- speed indicator -->
+<rect x="20" y="30" width="70" height="36" rx="6" fill="rgba(16,185,129,.1)" stroke="rgba(16,185,129,.3)" stroke-width="1"/>
+<text x="29" y="45" font-family="monospace" font-size="8" fill="#34d399" opacity=".8">90s SPEED</text>
+<text x="26" y="60" font-family="'Orbitron',monospace" font-size="14" font-weight="800" fill="#10b981" filter="url(#gglow)">0.38s</text>
+<text x="20" y="200" font-family="'Orbitron',monospace" font-size="10" font-weight="700" fill="#34d399" letter-spacing="2" opacity=".9">BUILD TRAINER</text>
+</svg>`,
+
+praisetweaks:`<svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block">
+<defs>
+  <linearGradient id="ptbg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#020c02"/><stop offset="100%" stop-color="#001200"/></linearGradient>
+  <filter id="ptglow"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="ptglow2"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="400" height="210" fill="url(#ptbg)"/>
+<g opacity="0.07" stroke="#00ff41" stroke-width="1">
+<line x1="0" y1="7" x2="400" y2="7"/><line x1="0" y1="14" x2="400" y2="14"/><line x1="0" y1="21" x2="400" y2="21"/><line x1="0" y1="28" x2="400" y2="28"/><line x1="0" y1="35" x2="400" y2="35"/><line x1="0" y1="42" x2="400" y2="42"/><line x1="0" y1="49" x2="400" y2="49"/><line x1="0" y1="56" x2="400" y2="56"/><line x1="0" y1="63" x2="400" y2="63"/><line x1="0" y1="70" x2="400" y2="70"/><line x1="0" y1="77" x2="400" y2="77"/><line x1="0" y1="84" x2="400" y2="84"/><line x1="0" y1="91" x2="400" y2="91"/><line x1="0" y1="98" x2="400" y2="98"/><line x1="0" y1="105" x2="400" y2="105"/><line x1="0" y1="112" x2="400" y2="112"/><line x1="0" y1="119" x2="400" y2="119"/><line x1="0" y1="126" x2="400" y2="126"/><line x1="0" y1="133" x2="400" y2="133"/><line x1="0" y1="140" x2="400" y2="140"/><line x1="0" y1="147" x2="400" y2="147"/><line x1="0" y1="154" x2="400" y2="154"/><line x1="0" y1="161" x2="400" y2="161"/><line x1="0" y1="168" x2="400" y2="168"/><line x1="0" y1="175" x2="400" y2="175"/><line x1="0" y1="182" x2="400" y2="182"/><line x1="0" y1="189" x2="400" y2="189"/><line x1="0" y1="196" x2="400" y2="196"/><line x1="0" y1="203" x2="400" y2="203"/>
+</g>
+<text filter="url(#ptglow)" font-family="monospace" font-size="10" fill="#00ff41" opacity="0.85"><tspan x="8" y="22">0x7F3A</tspan><tspan x="8" dy="13">0x2C91</tspan><tspan x="8" dy="13">0xAB0F</tspan><tspan x="8" dy="13">0xDE4E</tspan><tspan x="8" dy="13">0x3382</tspan></text>
+<text filter="url(#ptglow)" font-family="monospace" font-size="10" fill="#00ff41" opacity="0.55"><tspan x="52" y="15">01101001</tspan><tspan x="52" dy="13">00111010</tspan><tspan x="52" dy="13">11010001</tspan><tspan x="52" dy="13">00001110</tspan></text>
+<text filter="url(#ptglow)" font-family="monospace" font-size="9" fill="#00cc33" opacity="0.5"><tspan x="118" y="30">INJECT</tspan><tspan x="118" dy="13">ACCESS</tspan><tspan x="118" dy="13">BYPASS</tspan><tspan x="118" dy="13">TUNED</tspan></text>
+<text filter="url(#ptglow)" font-family="monospace" font-size="10" fill="#00ff41" opacity="0.65"><tspan x="308" y="20">FF A3 7C</tspan><tspan x="308" dy="13">01 DE 2F</tspan><tspan x="308" dy="13">08 B4 3E</tspan><tspan x="308" dy="13">9D C0 11</tspan></text>
+<text filter="url(#ptglow)" font-family="monospace" font-size="10" fill="#00ff41" opacity="0.45"><tspan x="368" y="30">1010</tspan><tspan x="368" dy="13">0110</tspan><tspan x="368" dy="13">1101</tspan></text>
+<ellipse cx="200" cy="108" rx="58" ry="58" fill="rgba(0,255,65,0.05)" filter="url(#ptglow2)"/>
+<rect x="143" y="118" width="114" height="72" rx="6" fill="none" stroke="#00ff41" stroke-width="1.8" opacity="0.95"/>
+<rect x="147" y="122" width="106" height="62" rx="3" fill="rgba(0,15,0,0.92)" stroke="#00ff41" stroke-width="0.5" opacity="0.9"/>
+<text filter="url(#ptglow)" font-family="monospace" font-size="7.5" fill="#00ff41"><tspan x="153" y="135">&gt; praisetweaks --run</tspan><tspan x="153" dy="11">scanning system...</tspan><tspan x="153" dy="11" fill="#00cc33">[ OK ] 400dpi lock</tspan><tspan x="153" dy="11" fill="#00ff99">sens 0.078 injected</tspan></text>
+<rect x="128" y="190" width="144" height="8" rx="4" fill="#00ff41" opacity="0.25"/>
+<text filter="url(#ptglow)" font-family="'Courier New',monospace" font-size="13" font-weight="bold" fill="#00ff41" text-anchor="middle" x="200" y="102">[ PRAISETWEAKS ]</text>
+<circle cx="200" cy="108" r="72" fill="none" stroke="#00ff41" stroke-width="0.6" opacity="0.18"/>
+<circle cx="200" cy="108" r="88" fill="none" stroke="#00ff41" stroke-width="0.3" opacity="0.09"/>
+</svg>`,
+
+praiseconfig:`<svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block">
+<defs>
+  <linearGradient id="cfg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1c0d00"/><stop offset="100%" stop-color="#1a0a00"/></linearGradient>
+  <linearGradient id="cfg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f59e0b"/><stop offset="100%" stop-color="#f97316"/></linearGradient>
+  <filter id="oglow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="400" height="210" fill="url(#cfg1)"/>
+<!-- circuit lines -->
+<g opacity=".12" stroke="#f59e0b" stroke-width=".7">
+  <path d="M 0 50 L 100 50 L 120 70 L 200 70" fill="none"/>
+  <path d="M 0 100 L 60 100 L 80 120 L 180 120" fill="none"/>
+  <path d="M 400 60 L 300 60 L 280 80 L 220 80" fill="none"/>
+  <circle cx="100" cy="50" r="3"/><circle cx="60" cy="100" r="3"/><circle cx="300" cy="60" r="3"/>
+</g>
+<!-- profile cards floating -->
+<g>
+  <rect x="40" y="50" width="90" height="55" rx="7" fill="rgba(245,158,11,.1)" stroke="rgba(245,158,11,.3)" stroke-width="1.2"/>
+  <rect x="40" y="50" width="90" height="8" rx="4" fill="rgba(245,158,11,.2)" style="border-radius:7px 7px 0 0"/>
+  <text x="50" y="62" font-family="monospace" font-size="7" fill="#fbbf24">PRO CONFIG</text>
+  <rect x="50" y="72" width="50" height="4" rx="2" fill="rgba(245,158,11,.4)"/>
+  <rect x="50" y="80" width="35" height="4" rx="2" fill="rgba(245,158,11,.25)"/>
+  <rect x="50" y="88" width="60" height="4" rx="2" fill="rgba(245,158,11,.2)"/>
+</g>
+<g>
+  <rect x="155" y="30" width="90" height="55" rx="7" fill="rgba(249,115,22,.12)" stroke="rgba(249,115,22,.35)" stroke-width="1.5" filter="url(#oglow)"/>
+  <rect x="155" y="30" width="90" height="8" rx="4" fill="rgba(249,115,22,.25)"/>
+  <text x="165" y="42" font-family="monospace" font-size="7" fill="#fb923c">TOURNAMENT</text>
+  <rect x="165" y="52" width="50" height="4" rx="2" fill="rgba(249,115,22,.5)"/>
+  <rect x="165" y="60" width="35" height="4" rx="2" fill="rgba(249,115,22,.3)"/>
+  <rect x="165" y="68" width="60" height="4" rx="2" fill="rgba(249,115,22,.25)"/>
+</g>
+<g opacity=".7">
+  <rect x="270" y="55" width="90" height="55" rx="7" fill="rgba(245,158,11,.08)" stroke="rgba(245,158,11,.2)" stroke-width="1"/>
+  <rect x="270" y="55" width="90" height="8" rx="4" fill="rgba(245,158,11,.15)"/>
+  <text x="280" y="67" font-family="monospace" font-size="7" fill="#fbbf24" opacity=".8">ZONE WARS</text>
+  <rect x="280" y="77" width="50" height="4" rx="2" fill="rgba(245,158,11,.3)"/>
+  <rect x="280" y="85" width="35" height="4" rx="2" fill="rgba(245,158,11,.2)"/>
+</g>
+<!-- cloud sync -->
+<text x="175" y="130" font-family="monospace" font-size="9" fill="#f59e0b" opacity=".6" text-anchor="middle">↑ syncing to cloud...</text>
+<text x="20" y="200" font-family="'Orbitron',monospace" font-size="10" font-weight="700" fill="#fbbf24" letter-spacing="2" opacity=".9">CONFIG MGR</text>
+</svg>`,
+
+praiseperformance:`<svg viewBox="0 0 400 210" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" style="display:block">
+<defs>
+  <linearGradient id="pfg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#030d2b"/><stop offset="100%" stop-color="#061a3a"/></linearGradient>
+  <linearGradient id="pfg2" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="rgba(37,99,235,0)"/><stop offset="100%" stop-color="rgba(37,99,235,.4)"/></linearGradient>
+  <linearGradient id="pfg3" x1="0%" y1="100%" x2="0%" y2="0%"><stop offset="0%" stop-color="rgba(6,182,212,0)"/><stop offset="100%" stop-color="rgba(6,182,212,.35)"/></linearGradient>
+  <filter id="bglw"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="400" height="210" fill="url(#pfg1)"/>
+<!-- FPS graph bars -->
+<g>
+  <rect x="40" y="140" width="18" height="30" rx="2" fill="url(#pfg2)" opacity=".6"/>
+  <rect x="65" y="120" width="18" height="50" rx="2" fill="url(#pfg2)" opacity=".7"/>
+  <rect x="90" y="100" width="18" height="70" rx="2" fill="url(#pfg2)" opacity=".8"/>
+  <rect x="115" y="80" width="18" height="90" rx="2" fill="url(#pfg2)"/>
+  <rect x="140" y="60" width="18" height="110" rx="2" fill="url(#pfg2)"/>
+  <rect x="165" y="40" width="18" height="130" rx="2" fill="url(#pfg3)"/>
+  <rect x="190" y="30" width="18" height="140" rx="2" fill="url(#pfg3)"/>
+  <rect x="215" y="22" width="18" height="148" rx="2" fill="url(#pfg3)" filter="url(#bglw)"/>
+</g>
+<!-- trend line -->
+<path d="M 49 140 L 74 118 L 99 98 L 124 78 L 149 58 L 174 38 L 199 28 L 224 20" stroke="#60a5fa" stroke-width="2" fill="none" filter="url(#bglw)"/>
+<!-- peak marker -->
+<circle cx="224" cy="20" r="5" fill="#60a5fa" filter="url(#bglw)"/>
+<!-- FPS counter -->
+<rect x="270" y="40" width="100" height="60" rx="8" fill="rgba(37,99,235,.1)" stroke="rgba(37,99,235,.3)" stroke-width="1.5"/>
+<text x="280" y="58" font-family="monospace" font-size="9" fill="#93c5fd" opacity=".8">FPS COUNTER</text>
+<text x="276" y="82" font-family="'Orbitron',monospace" font-size="22" font-weight="900" fill="#60a5fa" filter="url(#bglw)">240</text>
+<!-- baseline label -->
+<line x1="30" y1="170" x2="260" y2="170" stroke="rgba(255,255,255,.1)" stroke-width="1"/>
+<text x="30" y="184" font-family="monospace" font-size="8" fill="#64748b">BEFORE OPTIMIZE</text>
+<text x="175" y="184" font-family="monospace" font-size="8" fill="#60a5fa">AFTER</text>
+<text x="20" y="200" font-family="'Orbitron',monospace" font-size="10" font-weight="700" fill="#93c5fd" letter-spacing="2" opacity=".9">FPS OPTIMIZER</text>
+</svg>`,
+};
+
+/* ——————————————————————————————
+   PRODUCTS DATA
+—————————————————————————————— */
+const PRODUCTS = [
+  {
+    id:'praisedragg',
+    name:'PraiseDragg',
+    tagline:'Drag Edit Tools',
+    price:15,
+    tiers:null,
+    status:'Available',
+    badge:'Best Seller',
+    badgeType:'gold',
+    category:'training',
+    img:'https://azyjlkhpdgafuobyxoax.supabase.co/storage/v1/object/public/asset-images/b5e5c78f-083f-4ff5-be93-7c55afc0382f/mcp/3225b41b-13d8-4443-b94f-87910583436b/u1-e1-0.png',
+    gradient:'linear-gradient(135deg,#4c1d95,#1d4ed8)',
+    accentColor:'rgba(124,58,237,.8)',
+    desc:'Master the art of drag editing with PraiseDragg — the most advanced drag edit training tool available for Fortnite players.',
+    longDesc:'PraiseDragg combines cutting-edge input analysis with real-time feedback to help you perfect drag editing at any sensitivity. Whether you\'re a beginner struggling with basics or a pro refining 90s, PraiseDragg provides the structured training environment you need to reach consistency.',
+    features:['Real-time drag edit analysis','Custom sensitivity calibration','100+ training scenarios','Performance tracking dashboard','Replay & analysis system','Competitive player benchmarks'],
+    tags:['Editing','Training','Analysis'],
+    icon:'✏️',
+    iconBg:'rgba(124,58,237,.25)',
+  },
+  {
+    id:'praiseaim',
+    name:'PraiseAim',
+    tagline:'Aim Training Suite',
+    price:24.99,
+    tiers:{basic:12.99,pro:24.99,elite:39.99},
+    status:'Available',
+    badge:'Popular',
+    badgeType:'blue',
+    category:'training',
+    img:'https://azyjlkhpdgafuobyxoax.supabase.co/storage/v1/object/public/asset-images/b5e5c78f-083f-4ff5-be93-7c55afc0382f/mcp/107474e2-231a-41c2-8d8d-e9d46315d063/u1-e1-0.png',
+    gradient:'linear-gradient(135deg,#7f1d1d,#c2410c)',
+    accentColor:'rgba(220,38,38,.7)',
+    desc:'Sharpen your aim with PraiseAim, a comprehensive training suite engineered for precision and consistency in every gunfight.',
+    longDesc:'PraiseAim uses adaptive algorithms to identify your weakest aiming patterns and builds targeted exercises to fix them. Track your flick accuracy, tracking precision, and micro-adjustment control over time with stunning analytics that reveal exactly what\'s holding you back.',
+    features:['Adaptive aim training algorithms','Flick, tracking & micro-adjustment modes','Weapon-specific aim profiles','Session analytics & heat maps','Compare vs top 100 players','Custom drill builder'],
+    tags:['Aim','Precision','Training'],
+    icon:'🎯',
+    iconBg:'rgba(220,38,38,.22)',
+  },
+  {
+    id:'praisevision',
+    name:'PraiseVision',
+    tagline:'Visual Training Tools',
+    price:6,
+    tiers:null,
+    status:'Available',
+    badge:'New',
+    badgeType:'green',
+    category:'training',
+    img:'',
+    gradient:'linear-gradient(135deg,#0e7490,#1d4ed8)',
+    accentColor:'rgba(6,182,212,.7)',
+    desc:'Train your visual awareness and reaction speed with PraiseVision — see the game before it happens.',
+    longDesc:'PraiseVision enhances your in-game perception with visual awareness modules that teach you to read enemy movement, anticipate edits, and position your crosshair instinctively. When every millisecond counts, PraiseVision gives you the edge.',
+    features:['Visual awareness drills','Reaction time measurement','Enemy movement prediction','Peripheral vision training','Color & contrast optimization','Anti-flash training mode'],
+    tags:['Vision','Reaction','Awareness'],
+    icon:'👁️',
+    iconBg:'rgba(6,182,212,.2)',
+  },
+  {
+    id:'praisebuild',
+    name:'PraiseBuild',
+    tagline:'Building Practice Tools',
+    price:34.99,
+    tiers:{basic:17.99,pro:34.99,elite:59.99},
+    status:'Available',
+    badge:'Pro Pick',
+    badgeType:'purple',
+    category:'training',
+    gradient:'linear-gradient(135deg,#064e3b,#065f46)',
+    accentColor:'rgba(16,185,129,.7)',
+    desc:'Become a building machine with PraiseBuild — structured training for 90s, tunnels, retakes, and everything in between.',
+    longDesc:'PraiseBuild is built for players who want to master the building meta. From basic ramp-wall combos to advanced piece control, the suite covers every fundamental building pattern you need to compete at the highest level. Includes speed metrics and structure timers.',
+    features:['90s training with speed metrics','Tunnel & box fight scenarios','Piece control exercises','Ramp rush pattern library','Build-edit combo practice','Keyboard input optimization'],
+    tags:['Building','90s','Mechanics'],
+    icon:'🏗️',
+    iconBg:'rgba(16,185,129,.18)',
+  },
+  {
+    id:'praisetweaks',
+    name:'PraiseTweaks',
+    tagline:'Windows PC Optimizer',
+    price:15.99,
+    tiers:null,
+    status:'Available',
+    badge:null,
+    badgeType:null,
+    category:'optimization',
+    gradient:'linear-gradient(135deg,#001a00,#003300)',
+    accentColor:'rgba(0,255,65,.6)',
+    desc:'Squeeze every frame out of your PC with PraiseTweaks — a one-click Windows optimizer built for gamers who want max performance.',
+    longDesc:'PraiseTweaks is a Windows performance tool that applies registry tweaks, disables background bloat, optimizes your power plan, and cleans up your system so your PC runs faster and smoother. Designed for gamers — run it once and feel the difference.',
+    features:['Registry performance tweaks','Disable Windows background bloat','Apply high-performance power plan','Clean temp files & junk','Optimize startup programs','Runs with admin elevation automatically'],
+    tags:['Windows','Performance','PC'],
+    icon:'💻',
+    iconBg:'rgba(0,255,65,.12)',
+  },
+  {
+    id:'praiseconfig',
+    name:'PraiseConfig',
+    tagline:'Configuration Manager',
+    price:39.99,
+    tiers:{basic:19.99,pro:39.99,elite:64.99},
+    status:'Available',
+    badge:'Premium',
+    badgeType:'gold',
+    category:'management',
+    gradient:'linear-gradient(135deg,#78350f,#c2410c)',
+    accentColor:'rgba(217,119,6,.7)',
+    desc:'Manage, backup, and sync your complete Fortnite configuration with PraiseConfig — never lose your settings again.',
+    longDesc:'PraiseConfig is the ultimate settings management solution. Create multiple configuration profiles, sync them across devices, and share them with teammates. Includes one-click import from pro player configs, full version history, and cross-platform sync.',
+    features:['Multi-profile config management','Cloud backup & sync','Pro player config library (500+)','One-click config import/export','Hardware profile switching','Config version history'],
+    tags:['Config','Backup','Profiles'],
+    icon:'⚙️',
+    iconBg:'rgba(217,119,6,.18)',
+  },
+  {
+    id:'praiseperformance',
+    name:'PraisePerformance',
+    tagline:'Performance Optimization',
+    price:44.99,
+    tiers:{basic:22.99,pro:44.99,elite:74.99},
+    status:'Available',
+    badge:'Most Advanced',
+    badgeType:'blue',
+    category:'optimization',
+    img:'https://azyjlkhpdgafuobyxoax.supabase.co/storage/v1/object/public/asset-images/b5e5c78f-083f-4ff5-be93-7c55afc0382f/mcp/f6aec8f4-f196-4354-a650-4c7069d08efb/u1-e1-0.png',
+    gradient:'linear-gradient(135deg,#1e3a8a,#0e7490)',
+    accentColor:'rgba(37,99,235,.8)',
+    desc:'Maximum frames, minimum input lag. PraisePerformance is the complete FPS and system optimization toolkit for Fortnite.',
+    longDesc:'PraisePerformance is an all-in-one system optimizer specifically tuned for Fortnite. Analyze your hardware bottlenecks, apply optimized Windows & GPU settings, and monitor real-time performance data to maintain your competitive edge every session.',
+    features:['FPS optimization engine','Windows & GPU tuning profiles','Input lag analyzer & optimizer','Real-time performance overlay','Hardware bottleneck detector','Network latency optimization'],
+    tags:['FPS','Performance','System'],
+    icon:'⚡',
+    iconBg:'rgba(37,99,235,.2)',
+  },
+];
+
+const FAQS = [
+  {q:'What are PraiseJug\'s Ware tools?',a:'PraiseJug\'s Ware produces premium digital training and optimization tools specifically designed for Fortnite players. Each tool targets a specific aspect of gameplay — editing, aiming, building, sensitivity, configuration, or performance — with data-driven feedback and professional-grade analytics.'},
+  {q:'What platforms do your tools support?',a:'All tools are Windows-compatible (Windows 10/11, 64-bit). Our tools run externally alongside Fortnite — no game modification, no injected code. They work via training modes, config management, and system-level optimization that is fully compliant with Epic Games\' policies.'},
+  {q:'How do I download after purchase?',a:'After completing your purchase, you\'ll receive a download link via email and it will appear immediately in your Customer Dashboard under "Downloads." All files are hosted on our secure CDN with one-click download.'},
+  {q:'Are software updates included?',a:'Yes! All purchases include lifetime updates for the version you bought. Whenever Fortnite gets a major update that affects our tools, we patch and update them — usually within 24-48 hours. You\'ll get a notification in your dashboard.'},
+  {q:'Can I use multiple tools at the same time?',a:'Absolutely. All PraiseJug\'s Ware tools are built to work alongside each other without conflicts. Many players run PraiseConfig, PraiseTweaks, and PraisePerformance together as a foundation, then layer training tools like PraiseDragg on top.'},
+  {q:'What payment methods do you accept?',a:'We accept all major credit and debit cards (Visa, Mastercard, Amex), PayPal, and cryptocurrency (BTC, ETH). All payments are processed securely through Stripe. We never store your payment details on our servers.'},
+  {q:'What is your refund policy?',a:'We offer a 7-day money-back guarantee on all products, no questions asked. If you\'re not satisfied within 7 days of purchase, contact our support team and we\'ll issue a full refund. After 7 days, refunds are handled on a case-by-case basis.'},
+  {q:'Do you offer bundle deals?',a:'Yes! We offer a Full Arsenal Bundle (all 7 tools) at a 35% discount off individual prices. We also occasionally run seasonal sales and offer student discounts. Subscribe to our newsletter or join the Discord to get notified of deals.'},
+  {q:'Are the tools safe to use with my Fortnite account?',a:'100% safe. All PraiseJug\'s Ware tools are external applications — they do not inject into the Fortnite process, modify game files, or interact with the game client in any way that would violate Epic\'s Terms of Service. They are training tools and system utilities, not cheats or hacks.'},
+  {q:'How is PraiseJug\'s Ware different from other training tools?',a:'Most training tools are generic aim trainers. PraiseJug\'s Ware is built specifically for Fortnite mechanics — drag editing, build combos, and the unique sensitivity demands of the game. Our tools are built by competitive Fortnite players who understand exactly what it takes to rank up, not generic software developers.'},
+];
+
+/* ——————————————————————————————
+   ROUTER
+—————————————————————————————— */
+let currentPage = 'home';
+
+function go(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById('page-'+page);
+  if(target){
+    target.classList.add('active');
+    currentPage = page;
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.classList.toggle('active', a.dataset.page===page);
+  });
+  document.querySelectorAll('.mobile-nav a').forEach(a=>{
+    a.classList.toggle('active', a.textContent.toLowerCase().includes(page));
+  });
+  if(page==='products') renderFullGrid();
+  if(page==='faq') renderFAQ();
+  initReveal();
+}
+
+function openProduct(id){
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('pd-content').innerHTML = buildDetailHTML(p);
+  go('product-detail');
+  document.querySelectorAll('.pt').forEach((t,i)=>{
+    if(i===1) t.classList.add('sel');
+  });
+}
+
+/* ——————————————————————————————
+   RENDER HELPERS
+—————————————————————————————— */
+function prodCardHTML(p, compact=false){
+  const badge = p.badge ? `<span class="badge badge-${p.badgeType}">${p.badge}</span>` : '';
+  return `
+  <div class="card card-glow prod-card" onclick="openProduct('${p.id}')">
+    <div class="pc-vis" style="position:relative;overflow:hidden">
+      ${PRODUCT_ART[p.id] || buildIconSVG(p)}
+      <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.6) 0%,transparent 50%)"></div>
+      <div style="position:absolute;bottom:14px;left:14px">${badge}</div>
+      <div style="position:absolute;top:14px;right:14px"><span class="badge badge-green"><span class="dot-live"></span> Live</span></div>
+    </div>
+    <div class="pc-body">
+      <div class="pc-top">
+        <div>
+          <div class="pc-name">${p.name}</div>
+          <div class="pc-tag">${p.tagline}</div>
         </div>
       </div>
-      <button class="modal-btn" onclick="goPayPal()" style="margin-bottom:12px">&#128179; &nbsp;Pay $6 via PayPal</button>
-      <button class="modal-btn" onclick="showKeyEntry()" style="background:linear-gradient(135deg,#5865f2,#4c1d95)">
-        <svg style="display:inline;vertical-align:middle;margin-right:8px" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-        Already have a key? Enter it
-      </button>
-      <div class="secure-note">Keys verified via Firebase &middot; Single use only</div>
-    </div>
-
-    <!-- STEP 2: Key Entry -->
-    <div id="keyEntryForm" style="display:none">
-      <div class="modal-title">&#128273; &nbsp;Enter Access Key</div>
-      <div class="modal-sub">Enter the one-time key you received in Discord. Each key works once and expires immediately after use.</div>
-      <div class="form-group" style="margin-top:8px">
-        <label class="form-label">Access Key</label>
-        <input class="form-input" type="text" id="access-key-input" placeholder="e.g. PV-X7K2-M9QR-4ZWN" style="font-family:'Orbitron',monospace;font-size:1rem;letter-spacing:2px;text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
-        <div id="key-error" style="color:#ef4444;font-size:.75rem;margin-top:8px;display:none"></div>
+      <p class="pc-desc">${p.desc}</p>
+      <div class="pc-feats">${p.tags.map(t=>`<span class="f-tag">${t}</span>`).join('')}</div>
+      <div class="pc-foot">
+        <div class="pc-price"><span class="amount">$${p.price}</span><span class="per"> one-time</span></div>
+        <button class="btn btn-primary btn-sm">View Details →</button>
       </div>
-      <button class="modal-btn" id="verify-btn" onclick="verifyKey()">Verify Key &amp; Unlock</button>
-      <button onclick="showBuyStep()" style="width:100%;margin-top:10px;background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;padding:8px">â Back</button>
+    </div>
+  </div>`;
+}
+
+function buildDetailHTML(p){
+  const related = PRODUCTS.filter(x=>x.id!==p.id).slice(0,3);
+  return `
+  <div style="padding:72px 0 0">
+    <div class="pd-breadcrumb">
+      <a onclick="go('home')">Home</a><span class="sep">/</span>
+      <a onclick="go('products')">Products</a><span class="sep">/</span>
+      <span>${p.name}</span>
+    </div>
+    <div class="pd-grid">
+      <div class="pd-image" style="position:relative;overflow:hidden">
+        ${PRODUCT_ART[p.id] ? `<div style="position:absolute;inset:0">${PRODUCT_ART[p.id]}</div>` : buildIconSVG(p, true)}
+        <div style="position:absolute;bottom:20px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center">
+          ${p.badge?`<span class="badge badge-${p.badgeType}">${p.badge}</span>`:'<span></span>'}
+          <span class="badge badge-green"><span class="dot-live"></span> Available</span>
+        </div>
+      </div>
+      <div class="pd-info">
+        <div class="badges">
+          ${p.badge?`<span class="badge badge-${p.badgeType}">${p.badge}</span>`:''}
+          <span class="badge badge-green"><span class="dot-live"></span> In Stock</span>
+        </div>
+        <h1>${p.name}</h1>
+        <div class="pd-tagline">${p.tagline}</div>
+        <p class="pd-desc">${p.longDesc}</p>
+        <ul class="pd-feats">
+          ${p.features.map(f=>`<li><span class="ck">✓</span>${f}</li>`).join('')}
+        </ul>
+        ${p.tiers ? `
+        <div class="price-tiers">
+          <div class="pt" onclick="selectTier(this,'${p.tiers.basic}',this.closest('.pd-info'))">
+            <div class="t-name">Basic</div>
+            <div class="t-price">$${p.tiers.basic}</div>
+          </div>
+          <div class="pt pop sel" onclick="selectTier(this,'${p.tiers.pro}',this.closest('.pd-info'))">
+            <span class="pop-lbl">★ Popular</span>
+            <div class="t-name">Pro</div>
+            <div class="t-price">$${p.tiers.pro}</div>
+          </div>
+          <div class="pt" onclick="selectTier(this,'${p.tiers.elite}',this.closest('.pd-info'))">
+            <div class="t-name">Elite</div>
+            <div class="t-price">$${p.tiers.elite}</div>
+          </div>
+        </div>` : ''}
+        <div class="pd-buy">
+          <button class="btn btn-primary btn-lg" id="buy-btn-${p.id}" onclick="doPurchase('${p.name}','${p.price}')">
+            Purchase — $${p.price}
+          </button>
+          <button class="btn btn-secondary btn-lg" title="Add to wishlist" onclick="showToast('❤️ Added to wishlist!','success')">♡</button>
+        </div>
+        <p style="font-size:.78rem;color:var(--muted);margin-top:12px;text-align:center">🔒 Secure checkout · 7-day money-back guarantee</p>
+      </div>
+    </div>
+    <div style="margin-bottom:60px">
+      <div class="section-head" style="text-align:left;margin-bottom:28px"><h2 class="md">Related <span class="g-text">Products</span></h2></div>
+      <div class="related-grid">${related.map(r=>prodCardHTML(r)).join('')}</div>
+    </div>
+  </div>`;
+}
+
+function buildIconSVG(p, large=false){
+  const sz = large ? 160 : 80;
+  const fontSize = large ? 60 : 36;
+  return `
+  <div style="display:flex;align-items:center;justify-content:center;width:${sz}px;height:${sz}px;border-radius:${large?28:16}px;background:${p.iconBg};backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);box-shadow:0 0 ${large?40:20}px ${p.accentColor}">
+    <span style="font-size:${fontSize}px;line-height:1;filter:drop-shadow(0 0 ${large?20:8}px ${p.accentColor})">${p.icon}</span>
+  </div>`;
+}
+
+/* ——————————————————————————————
+   RENDER GRIDS
+—————————————————————————————— */
+function renderHeroPPI(){
+  const container = document.getElementById('hero-ppi-grid');
+  if(!container) return;
+  container.innerHTML = PRODUCTS.slice(0,4).map(p=>`
+  <div class="ppi" onclick="openProduct('${p.id}')">
+    <div class="ppi-icon" style="background:${p.iconBg};border:1px solid rgba(255,255,255,.1)">${p.icon}</div>
+    <div class="ppi-name">${p.name}</div>
+    <div class="ppi-price">${p.tiers?`from $${p.tiers.basic}`:`$${p.price}`}</div>
+  </div>`).join('') + PRODUCTS.slice(4,6).map(p=>`
+  <div class="ppi" onclick="openProduct('${p.id}')">
+    <div class="ppi-icon" style="background:${p.iconBg};border:1px solid rgba(255,255,255,.1)">${p.icon}</div>
+    <div class="ppi-name">${p.name}</div>
+    <div class="ppi-price">${p.tiers?`from $${p.tiers.basic}`:`$${p.price}`}</div>
+  </div>`).join('');
+}
+
+function renderHomeGrid(){
+  const g = document.getElementById('home-prod-grid');
+  if(!g) return;
+  g.innerHTML = PRODUCTS.map(p=>prodCardHTML(p)).join('');
+}
+
+let activeFilter = 'all';
+function renderFullGrid(){
+  const g = document.getElementById('full-prod-grid');
+  if(!g) return;
+  const list = activeFilter==='all' ? PRODUCTS : PRODUCTS.filter(p=>p.category===activeFilter);
+  g.innerHTML = list.map(p=>prodCardHTML(p)).join('');
+}
+
+function filterProds(btn, cat){
+  activeFilter = cat;
+  document.querySelectorAll('.f-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFullGrid();
+}
+
+function renderFAQ(){
+  const el = document.getElementById('faq-list');
+  if(!el||el.children.length>0) return;
+  el.innerHTML = FAQS.map((f,i)=>`
+  <div class="faq-item" id="faq-${i}">
+    <div class="faq-q" onclick="toggleFAQ(${i})">
+      <h3>${f.q}</h3>
+      <div class="faq-tog">+</div>
+    </div>
+    <div class="faq-a"><p>${f.a}</p></div>
+  </div>`).join('');
+}
+
+function toggleFAQ(i){
+  const item = document.getElementById('faq-'+i);
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(x=>x.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+}
+
+/* ——————————————————————————————
+   INTERACTIONS
+—————————————————————————————— */
+function selectTier(el, price, container){
+  const info = container || el.closest('.pd-info') || el.closest('.product-detail-page');
+  if(info){
+    info.querySelectorAll('.pt').forEach(t=>t.classList.remove('sel'));
+    el.classList.add('sel');
+    const btn = info.querySelector('[id^="buy-btn-"]');
+    if(btn) btn.textContent = `Purchase — $${price}`;
+  }
+}
+
+function doPurchase(name, price){
+  if(name==='PraiseDragg'){
+    showPraiseDraggThankYou();
+    return;
+  }
+  if(name==='PraiseVision'){
+    showPraiseVisionThankYou();
+    return;
+  }
+  if(name==='PraiseTweaks'){
+    showPraiseTweaksThankYou();
+    return;
+  }
+  showToast(`✅ Redirecting to PayPal checkout...`, 'success');
+  setTimeout(()=>{
+    window.open(`https://www.paypal.com/paypalme/PrinceGreen311/${price}`,'_blank');
+  }, 600);
+}
+
+function showPraiseVisionThankYou(){
+  window.open('https://www.paypal.com/paypalme/PrinceGreen311/6','_blank');
+  document.getElementById('pv-thankyou-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closePVThankyou(){
+  document.getElementById('pv-thankyou-modal').style.display='none';
+  document.body.style.overflow='';
+}
+
+function redeemPTKey(){
+  const key = (document.getElementById('pt-key-input').value||'').trim().toUpperCase();
+  const statusEl = document.getElementById('pt-key-status');
+  if(!key){ statusEl.textContent='Enter your access code.'; return; }
+  statusEl.style.color='#94a3b8';
+  statusEl.textContent='Verifying...';
+  fetch('https://praise-jug-default-rtdb.firebaseio.com/praisetweaks_keys/'+encodeURIComponent(key)+'.json')
+    .then(r=>r.json())
+    .then(data=>{
+      if(data && data.valid===true){
+        if(data.used){
+          statusEl.style.color='#f59e0b';
+          statusEl.textContent='Code already used. Contact support on Discord.';
+          return;
+        }
+        fetch('https://praise-jug-default-rtdb.firebaseio.com/praisetweaks_keys/'+encodeURIComponent(key)+'.json',{
+          method:'PATCH',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({used:true,usedAt:Date.now()})
+        });
+        statusEl.style.color='#00ff41';
+        statusEl.textContent='✓ Code accepted! Download starting...';
+        setTimeout(()=>{ closePTThankyou(); downloadPraiseTweaks(); }, 800);
+      } else {
+        statusEl.style.color='#ef4444';
+        statusEl.textContent='Invalid code. Check your Discord DM and try again.';
+      }
+    })
+    .catch(()=>{
+      statusEl.style.color='#ef4444';
+      statusEl.textContent='Verification failed. Check your connection.';
+    });
+}
+
+const PT_ZIP_B64 = 'UEsDBBQAAAAIAGiCcV3NwPynpgoAAOMmAAAQABwAUHJhaXNlVHdlYWtzLnBzMVVUCQAD5NL8auTS/Gp1eAsAAQQAAAAABAAAAADNWntT20gS/59PMaeiau2AHNvYBEjlao0xhNsYXNiEzWEqNZbGthZZ0s6MAF+W737do9HLFmCTS/ao8LCmHzO/fqi7Jy3bNgfzgBGzJQSbjdz5GZ0x0p8LyWaVK8ez/XtROfb5TGy0nqU94vTe8SYbG5tjoCYfyBm7N89HfzBLFopTPyPiyoA9SOAwepw6gg3uGb0VZDQn0ed/hRNDE/ad/7BC0Vq7Iig169VtsrtbLcdcknLZ84UjHd9DPW3mScb7FmfMi0UfUuu27bs+B4LrBanq+c3BwTH3Zy0+GZVqe9sk+o51wGnYS+xXU0eylH526HMbtiHnLh7KOHYemN0HBpfFm+rSB2cGRzr0H4Bic0xdkQrw5LNQIEHJ6LOJz8jlqbFN9stgHOlItxjCvHU+0RFzNXlqn4vWab8zuOq0fusb8eL6G0HkFjFCIoUE4HTou3Y5Ff8ysIldwO71Kv5oNhMBrVD62m82JQ9Z/LzP5KEferYoobvUmtukgayNxG3asCXuu6ICjl+KmBBBEY7WBDHmSHA895hpuY51SzQ9CRhHndSzGPEDiUan6K1GhnstJGpNdajoRzkjZRmOZCmDSH2bNOsakfoTiMR8ChQWrIBHj3oKDxasF24NZRdtG+TO2+4d2u7dLhz1iY2yQLk+5pVPjkAT/FraIPD16zeCOeyDcekC5lSynn/PuPGeEGW69DnpZQykiEjPpR5SHjFhAaHn+hZkrXHouqTduyQj3xdym3A28+8YGFjxuGBYKQzyuJ1Xf+QIOnIZ4NClDkrV6vVzohdIqR+ipzBpTcuom8TqjyGVCXLR6mLaFNIPAgCSjADkCUegSMCZYoPHT6o/gQ+HlC+r/30E+QdXCSwTCuKOPl9E+iP1F/qUEzpDvfA3d+lc/Z4yai9r/OyIkLrHv+tDJHhnYY5oSGc8BocSCWWkUW9NwG7QQBAqQm3sLmIau+F4vKz2Y+uknwjKqO146pwnYLePlNv3lAPm1pTZoYuAvc8c1A4t0AoWNpHaBd/wrPmyprM7x3YoHkfr05rOPp8enbYIJPacS3V9m8UbizT1wYhC7QgCyLPQuxBa6RNB71jkTwVqKb493i8dMLakWictd+JzR05nWcpI7SeUK4jH5L3Pb+PzKWiDQt8ZsFnQdlkUCxmN6hnBVXLsgKFysGc19kI+AUT/CL1bMoaIJ4NOt6cUxsnRomCKZc19Rrk1PfVs9hAJXwwatU4UQWzFnOYI4kyQ9PtHELDULojQHp2wsZPBViuDTESgvpCORWIS0jD3Tg5TdfqYnN1B2QGZICbjTGAeFjKUUI2gzg1MU3BW6xYCDjCBPPXtETIe1i9f4NNec2MDXIaUNh34VH1P4LfpSpKmNsh8oSdxYWurTL6pM0SrKt/HZNebzk20FsxxQWvYUpLfkEYdNhItY8ZeObOnLOvl9zrk7ui7nJWRz/KwVZ3md/bi7VmjFfbWRkChgopZogfMTt6A8XP9eo5g0i/veO0V5dYqRU4qftXyMeZYBeABp54IIJl5MuFLQa3hGxX+NZtRIRuRuKNV7J0BBxgWkEOHT9fWK1tULaZ/lLNC1oX/XaWZ4X8VWsiY8UGoWrEuamAlUmvkImSh4LBG5acXQapeLShVFEPsFkkiuNbAYiq6QZyt0cYjpIqRL6U/+7IQwQvJII7nzYD7E8g5At/hK0R0Sp1jXYjKUrKJLbJXjuswbItyPHGPg6d1vNAPhZGn6DrwHg+xb6wuLGALpBZq1YWlz9QNWcRRBGVKqSpUSNKhUH67RuWeMiXF+wW8IOYVI7/4fbV5RtDT6O5Uc/AW1bmpHDzxSHornPQQ3j6+p6jT/qQ3OO2e/rtDzs6vjGjp6X016/G+GhAUinit5J/v2ZB9PTARRvWdcK/dj9ZX6keVcCiI0oYdPhjp81YQQMWB5VxFd/ZRm1VNwW25zsQrPJUHdVa0PIM/QGnXsW2XRZOKSEA75CKHycJrTi0LYP0IxVOhg4AU7Rj4+WsbW9CSLhLwYVQG2+moIVlZ8IzTs5NKBWIgSnKFIamWhMWdQB7AboP0ofQldVU8Ryl0HHqWmsxcBjaUm+blaWlzJiZx+RIJWg5EpMkQpJq2ttLHRXu7dgDgUim3ubd6W2XIlpBnyqkEBeMFG4OUaSl6/hjt2xlDHGSS9EITeRPXGdmDJEckWDlKrOgLW8yoXQygxUxwxi/12BpPiGmHAVgP2ATsABoztk8b9VG1btpNe2w2Gnu2SWm1alZ3xrXGu8Y+G+3WSP2fmx70p+nhQoAjlelib/wX1M0uRI3Zlxy3V9gCpztSIIRwxIwcwSQFi0KXAkuVgR9JKpUrA+7MSmUggL1LYgzFllG+3rkBQBWshIHPgaS8Md+vbMW32oZv0IJPWmmh137JTBE5IqE5cgbBFsLsM37nWGmXbkJAwkez0yJ9KPQ96c71e4+ljEwu86lBZRioIavepv20mJ+LVzwcWB2vwqlBDj3M0aeQyYjx8bf25cGwf348uGpddIZdx+K+8MdyqHPcELIbFmafoVGCVDFEsTiDiLH+i5yH0jzLOjcijMKhkAkYl/PvUAKZvU0DGXIWZ8gqiUbhR1eQ6V9WqfK1kgcWHDsTcBsOHa1W8LVQ6t9u+GRGs2omyw4x9RyGRcOb560OJsCJy8sG6TwE8PZnfBhtLZ4MvcYJvltnjE58+PqSR/wkM6mZ1ksmUh6G20zGWy3LgjzPgcBWU6Z03JVPcAUAfuoCgF/6g043BkuXGUA81H8OTzgNpo4ljji8CHC68fEeVOCcKw/V3+7mmUndqo6uh3gz+pD1+Rxum97dIRWqTFwRsLZLhRh+a9g7u2x/d89kO/WmWatZzByNrZpZ3atW6yNWq+7U9h5TPSdgn/bUcW0VUbHWIkwhPCBMOtSaxnVxeka1Y6z7SieL9t78Wun1e1ROC4WWK5F9k5Y//lIw21hT3DJivIkQe2OUF5QWuliqEq3yid0xt88tUn2owlcdvlbzn1V1YN3ShVKd6ylw7QeJVwf5sdJb7XXlP27k//pZQafm1KvXEgtz61yo5UPgpXDTRZcYDqzACYY96NhmDOevw1NstcYU1oxXBdAzZgJdLev2mLM/QzVOX9NIz0lu9878I4a3LWsI/am2Tm8IXrK3olK3HHhtgEPyfOUQXTPp4mGTeXcHeFcwfAP2umAW9L9spdo7J6Z9kLz5caP/M2E9feGmBL4g5ycZInthskbbk79Gebr9udKU67Y/Cd//ZfuTXPysWhyI6DYovubJ4WXNbPLWIsb9DCgsfxaEmHlUd0CgayZ4OY+3mVaXesBvx8o/HOM4xogb+KJKNyc6Vo4ybSjz5PO8Cniz7zIWELPruK4jmOV7tiDNanVRwy9LGizOcD7gqYsyCIHk6HAy45cVNr0s8n7KeEZiXqSC6tRzpENdnLF9aFT3d7f1oFg92Kvt159U/GMcp5C5Vo0HYa+dFeNgVF2HxEOpwpl0C05p+x77B6Sjke9LMvdDTnptvC6mQeDOCQUKa0q9CaRUY3mud9E5PD8fRPPeZDEzDkzvyV49301PsDB/hD2r2wuzrQMiziCP5Y3Hsv4PZYqhP/XvPWDQT3DGBI5XKiPl9Z3v2Df6P3wB3RE4hz8plTf+C1BLAwQUAAAACABlgnFd2k/J+NIAAAANAQAAFAAcAFJ1biBQcmFpc2VUd2Vha3MuYmF0VVQJAAPe0vxq3tL8anV4CwABBAAAAAAEAAAAAE2PMW7CQBRE+z3FyJJDUtgylBQoJEoqCotE9Mv6G6+y3jX/7wZoUA6RE+YkGNIw9ei9mWcyXUBoWzWfo2ZthT4PpL8EK5286Yjx9/OLdfLQgmXTW688RQiJ2OCx8MlhtniYKtsiJ+bAK/oml8PTHhUeFcbcJGvaJ5Jo/Q76ygHbXRelLMtbZwgHYunIORSvoe+1b5B9RM2xqDmY0YdJfm6rCYoN8fY6aSnZP/5oo3pS94S3I5kUx4V1cNac8HIa9Ego3q0jZPm5Gar7t+Ug00xdAFBLAQIeAxQAAAAIAGiCcV3NwPynpgoAAOMmAAAQABgAAAAAAAEAAACkgQAAAABQcmFpc2VUd2Vha3MucHMxVVQFAAPk0vxqdXgLAAEEAAAAAAQAAAAAUEsBAh4DFAAAAAgAZYJxXdpPyfjSAAAADQEAABQAGAAAAAAAAQAAAKSB8AoAAFJ1biBQcmFpc2VUd2Vha3MuYmF0VVQFAAPe0vxqdXgLAAEEAAAAAAQAAAAAUEsFBgAAAAACAAIAsAAAABAMAAAAAA==';
+function downloadPraiseTweaks(){
+  (async function(){
+    try {
+      const downloads = await window.claude.use('downloads');
+      if(downloads){
+        // convert b64 to Uint8Array
+        const bin = atob(PT_ZIP_B64);
+        const bytes = new Uint8Array(bin.length);
+        for(let i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+        await downloads.save({filename:'PraiseTweaks.zip', data:bytes});
+        showToast('⬇️ PraiseTweaks.zip downloading!','success');
+      } else {
+        // fallback: data URI
+        const a = document.createElement('a');
+        a.href = 'data:application/zip;base64,' + PT_ZIP_B64;
+        a.download = 'PraiseTweaks.zip';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        showToast('⬇️ PraiseTweaks.zip downloading!','success');
+      }
+    } catch(e) {
+      showToast('Download ready — check your browser.','success');
+    }
+  })();
+}
+
+function showPraiseTweaksThankYou(){
+  window.open('https://www.paypal.com/paypalme/PrinceGreen311/15.99','_blank');
+  document.getElementById('pt-thankyou-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closePTThankyou(){
+  document.getElementById('pt-thankyou-modal').style.display='none';
+  document.body.style.overflow='';
+}
+
+function showPraiseDraggThankYou(){
+  // Send to PayPal first, then show thank you
+  window.open('https://www.paypal.com/paypalme/PrinceGreen311/15','_blank');
+  // Show thank you modal
+  document.getElementById('pd-thankyou-modal').style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closePDThankyou(){
+  document.getElementById('pd-thankyou-modal').style.display='none';
+  document.body.style.overflow='';
+}
+
+function submitContact(){
+  showToast('✅ Message sent! We\'ll reply within 24h.','success');
+}
+
+/* DASHBOARD */
+let loggedIn = false;
+function doLogin(){
+  loggedIn = true;
+  document.getElementById('login-view').style.display = 'none';
+  document.getElementById('dash-view').classList.add('show');
+  showToast('👋 Welcome back, PraisePlayer!','success');
+}
+function doLogout(){
+  loggedIn = false;
+  document.getElementById('login-view').style.display = 'block';
+  document.getElementById('dash-view').classList.remove('show');
+  document.querySelectorAll('.dn-nav li a').forEach(a=>a.classList.remove('active'));
+  document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-overview').classList.add('active');
+  document.querySelector('.dn-nav li a').classList.add('active');
+  showToast('👋 Signed out successfully.','success');
+}
+function showPanel(id){
+  document.querySelectorAll('.dash-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.dn-nav li a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+/* NAV */
+function toggleMenu(){
+  document.getElementById('mob-nav').classList.toggle('open');
+}
+window.addEventListener('scroll',()=>{
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY>60);
+});
+
+/* ——————————————————————————————
+   TOAST
+—————————————————————————————— */
+function showToast(msg, type='success'){
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast '+type;
+  t.innerHTML = `<span>${msg}</span>`;
+  wrap.appendChild(t);
+  setTimeout(()=>{
+    t.style.animation = 'toastOut .3s cubic-bezier(.4,0,.2,1) forwards';
+    setTimeout(()=>t.remove(),300);
+  },3200);
+}
+
+/* ——————————————————————————————
+   SCROLL REVEAL
+—————————————————————————————— */
+function initReveal(){
+  setTimeout(()=>{
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('vis')});
+    },{threshold:.08});
+    document.querySelectorAll('.reveal:not(.vis)').forEach(el=>obs.observe(el));
+  },100);
+}
+
+/* ——————————————————————————————
+   PARTICLE CANVAS
+—————————————————————————————— */
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let w, h, particles=[];
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  class P{
+    constructor(){this.reset(true)}
+    reset(rand){
+      this.x = rand ? Math.random()*w : (Math.random()<.5?-5:w+5);
+      this.y = rand ? Math.random()*h : Math.random()*h;
+      this.r = Math.random()*1.6+.4;
+      this.vx = (Math.random()-.5)*.28;
+      this.vy = (Math.random()-.5)*.28;
+      this.o = Math.random()*.35+.08;
+      this.c = Math.random()>.5?'124,58,237':'37,99,235';
+      this.glow = Math.random()>.85;
+    }
+    update(){
+      this.x+=this.vx; this.y+=this.vy;
+      if(this.x<-10||this.x>w+10||this.y<-10||this.y>h+10) this.reset(false);
+    }
+    draw(){
+      ctx.beginPath();
+      ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(${this.c},${this.o})`;
+      ctx.fill();
+      if(this.glow){
+        ctx.beginPath();
+        ctx.arc(this.x,this.y,this.r*3,0,Math.PI*2);
+        ctx.fillStyle = `rgba(${this.c},${this.o*.3})`;
+        ctx.fill();
+      }
+    }
+  }
+
+  function init(){
+    resize();
+    particles = Array.from({length:90},()=>new P());
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,w,h);
+    particles.forEach(p=>{p.update();p.draw()});
+    requestAnimationFrame(animate);
+  }
+
+  window.addEventListener('resize',()=>{resize();particles.forEach(p=>p.reset(true))});
+  init();
+  animate();
+})();
+
+/* ——————————————————————————————
+   INIT
+—————————————————————————————— */
+document.addEventListener('DOMContentLoaded',()=>{
+  renderHeroPPI();
+  renderHomeGrid();
+  initReveal();
+  // Add w-full class helper
+  document.querySelectorAll('.w-full').forEach(el=>el.style.width='100%');
+});
+</script>
+
+<!-- PraiseDragg Thank You Modal -->
+<div id="pd-thankyou-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(2,9,23,.92);backdrop-filter:blur(16px);align-items:center;justify-content:center">
+  <div style="background:#0a0f2a;border:1px solid rgba(124,58,237,.4);border-radius:24px;padding:52px 44px;max-width:500px;width:90%;text-align:center;box-shadow:0 0 80px rgba(124,58,237,.2);position:relative;animation:modalPop .35s cubic-bezier(.34,1.56,.64,1)">
+    <style>@keyframes modalPop{from{opacity:0;transform:scale(.88) translateY(24px)}to{opacity:1;transform:scale(1) translateY(0)}}</style>
+    <button onclick="closePDThankyou()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:#64748b;font-size:1.3rem;cursor:pointer;line-height:1">✕</button>
+
+    <!-- Animated checkmark -->
+    <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#4c1d95,#1d4ed8);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.4rem;box-shadow:0 0 40px rgba(124,58,237,.5);animation:modalPop .5s cubic-bezier(.34,1.56,.64,1)">🎮</div>
+
+    <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:4px;color:#7c3aed;text-transform:uppercase;margin-bottom:12px">Purchase Complete</div>
+    <h2 style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:16px;line-height:1.2">Thanks for buying<br><span style="background:linear-gradient(135deg,#a78bfa,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">PraiseDragg!</span></h2>
+    <p style="color:#94a3b8;font-size:.88rem;line-height:1.75;margin-bottom:28px">Payment sent? Join our Discord and send proof to get your files delivered instantly.</p>
+
+    <!-- Steps -->
+    <div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:20px 24px;margin-bottom:32px;text-align:left">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(124,58,237,.3);border:1px solid rgba(124,58,237,.5);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#a78bfa">1</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Join our Discord server</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(124,58,237,.3);border:1px solid rgba(124,58,237,.5);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#a78bfa">2</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Send a screenshot of your PayPal receipt</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(124,58,237,.3);border:1px solid rgba(124,58,237,.5);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#a78bfa">3</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Include the message: <span style="font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#a78bfa;background:rgba(124,58,237,.15);padding:2px 8px;border-radius:4px;letter-spacing:1px">PRAISEDRAGG</span></span>
+        </div>
+      </div>
     </div>
 
-    <!-- STEP 3: Unlocked -->
-    <div class="success-screen" id="successScreen">
-      <div class="success-icon">&#128065;</div>
-      <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:4px;color:var(--cyan);text-transform:uppercase;margin-bottom:10px">Access Granted</div>
-      <div class="success-title">PraiseVision Unlocked!</div>
-      <div class="success-msg" style="margin-bottom:28px">Your key has been verified and permanently burned. Welcome to PraiseJug's Ware.<br><br>You now have full access to all PraiseVision training tools. Train hard. &#128293;</div>
-      <button class="modal-btn" onclick="closeModal();scrollToTrainer()">&#128065; &nbsp;Open Trainer Now</button>
-      <button class="btn btn-outline" style="margin-top:10px;width:100%;justify-content:center" onclick="closeModal()">Close</button>
-    </div>
+    <!-- Discord Button -->
+    <a href="https://discord.gg/nRyMWqDtba" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#5865f2,#4c1d95);color:#fff;text-decoration:none;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;padding:16px 36px;border-radius:10px;text-transform:uppercase;transition:all .2s;box-shadow:0 0 30px rgba(88,101,242,.35)" onmouseover="this.style.boxShadow='0 0 50px rgba(88,101,242,.6)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 0 30px rgba(88,101,242,.35)';this.style.transform='none'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Join Discord for Download
+    </a>
+
+    <p style="margin-top:20px;font-size:.72rem;color:#475569;letter-spacing:1px">We'll deliver your files within minutes of verifying your receipt</p>
   </div>
 </div>
 
-<script>
-// ââ Particle Canvas ââ
-const canvas = document.getElementById('bg');
-const ctx = canvas.getContext('2d');
-let W,H,particles=[];
-function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
-resize();window.addEventListener('resize',resize);
-function mkP(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.3,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,a:Math.random()*.5+.1,c:Math.random()>.5?'6,182,212':'29,78,216'}}
-for(let i=0;i<80;i++)particles.push(mkP());
-function draw(){
-  ctx.clearRect(0,0,W,H);
-  particles.forEach(p=>{
-    p.x+=p.vx;p.y+=p.vy;
-    if(p.x<0)p.x=W;if(p.x>W)p.x=0;
-    if(p.y<0)p.y=H;if(p.y>H)p.y=0;
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    ctx.fillStyle=`rgba(${p.c},${p.a})`;ctx.fill();
-  });
-  // connections
-  particles.forEach((a,i)=>{
-    particles.slice(i+1).forEach(b=>{
-      const d=Math.hypot(a.x-b.x,a.y-b.y);
-      if(d<110){ctx.strokeStyle=`rgba(6,182,212,${.07*(1-d/110)})`;ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}
-    });
-  });
-  requestAnimationFrame(draw);
-}
-draw();
+<!-- PraiseVision Thank You Modal -->
 
-// ââ Scroll reveal ââ
-const io=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}})},{threshold:.1});
-document.querySelectorAll('.feature-card,.tcard,.step').forEach(el=>{el.style.cssText+='opacity:0;transform:translateY(24px);transition:opacity .5s ease,transform .5s ease';io.observe(el)});
+<!-- PraiseTweaks Thank You Modal -->
+<div id="pt-thankyou-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(2,9,2,.94);backdrop-filter:blur(16px);align-items:center;justify-content:center">
+  <div style="background:#020c02;border:1px solid rgba(0,255,65,.35);border-radius:24px;padding:52px 44px;max-width:500px;width:90%;text-align:center;box-shadow:0 0 80px rgba(0,255,65,.18);position:relative;animation:modalPop .35s cubic-bezier(.34,1.56,.64,1)">
+    <button onclick="closePTThankyou()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:#64748b;font-size:1.3rem;cursor:pointer;line-height:1">✕</button>
+    <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#003300,#004d00);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.4rem;box-shadow:0 0 40px rgba(0,255,65,.4);animation:modalPop .5s cubic-bezier(.34,1.56,.64,1)">💻</div>
+    <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:4px;color:#00ff41;text-transform:uppercase;margin-bottom:12px">Purchase Complete</div>
+    <h2 style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:16px;line-height:1.2">Thanks for buying<br><span style="background:linear-gradient(135deg,#00ff41,#00cc33);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">PraiseTweaks!</span></h2>
+    <p style="color:#94a3b8;font-size:.88rem;line-height:1.75;margin-bottom:28px">Payment sent? Join our Discord, send your receipt, and you'll get a one-time access code to unlock and download PraiseTweaks.</p>
+    <div style="background:rgba(0,255,65,.06);border:1px solid rgba(0,255,65,.18);border-radius:12px;padding:20px 24px;margin-bottom:28px;text-align:left">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(0,255,65,.2);border:1px solid rgba(0,255,65,.4);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#00ff41">1</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Join our Discord server</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(0,255,65,.2);border:1px solid rgba(0,255,65,.4);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#00ff41">2</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Send your PayPal receipt + message: <span style="font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#00ff41;background:rgba(0,255,65,.12);padding:2px 8px;border-radius:4px;letter-spacing:1px">PRAISETWEAKS</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(0,255,65,.2);border:1px solid rgba(0,255,65,.4);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#00ff41">3</div>
+          <span style="font-size:.85rem;color:#e2e8f0">You'll receive a one-time access code via DM</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(0,255,65,.2);border:1px solid rgba(0,255,65,.4);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#00ff41">4</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Enter your code below — download starts instantly</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <input id="pt-key-input" type="text" placeholder="Enter access code..." style="flex:1;background:rgba(0,255,65,.06);border:1px solid rgba(0,255,65,.3);border-radius:10px;padding:14px 18px;color:#00ff41;font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;outline:none" oninput="this.value=this.value.toUpperCase()"/>
+      <button onclick="redeemPTKey()" style="background:linear-gradient(135deg,#003300,#004d00);border:1px solid rgba(0,255,65,.5);color:#00ff41;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:1px;padding:14px 20px;border-radius:10px;cursor:pointer;white-space:nowrap">Unlock</button>
+    </div>
+    <div id="pt-key-status" style="font-size:.8rem;color:#ef4444;min-height:18px;margin-bottom:16px"></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="https://discord.gg/nRyMWqDtba" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#5865f2,#4c1d95);color:#fff;text-decoration:none;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;padding:16px 28px;border-radius:10px;text-transform:uppercase;transition:all .2s;box-shadow:0 0 30px rgba(88,101,242,.35)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Join Discord
+      </a>
+    </div>
+    <p style="margin-top:20px;font-size:.72rem;color:#475569;letter-spacing:1px">You'll receive your code within minutes of verifying your receipt</p>
+  </div>
+</div>
 
-// ââ Firebase Config ââ
-// PASTE YOUR FIREBASE CONFIG HERE - replace the values below
-const FB_CONFIG = {
-  apiKey: "AIzaSyC5uX8Fg5IVr9Z2xy4HpssqBpjvo7Lj_6E",
-  authDomain: "praise-jug.firebaseapp.com",
-  databaseURL: "https://praise-jug-default-rtdb.firebaseio.com",
-  projectId: "praise-jug",
-  storageBucket: "praise-jug.firebasestorage.app",
-  messagingSenderId: "603451542565",
-  appId: "1:603451542565:web:4b27e82387275b248203cc"
-};
-const FB_CODES_PATH = 'praisevision_keys'; // path in your database
-
-// Firebase REST API helpers - no SDK import needed
-const FB_BASE = FB_CONFIG.databaseURL;
-async function fbGet(path){
-  const r=await fetch(`${FB_BASE}/${path}.json`);
-  if(!r.ok)throw new Error(`HTTP ${r.status}`);
-  return r.json();
-}
-async function fbPatch(path,data){
-  const r=await fetch(`${FB_BASE}/${path}.json`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-  if(!r.ok)throw new Error(`HTTP ${r.status}`);
-  return r.json();
-}
-
-// ââ Modal ââ
-function openModal(){
-  document.getElementById('purchaseModal').classList.add('open');
-  document.body.style.overflow='hidden';
-  showBuyStep();
-}
-function closeModal(){
-  document.getElementById('purchaseModal').classList.remove('open');
-  document.body.style.overflow='';
-}
-function closeModalOutside(e){if(e.target===document.getElementById('purchaseModal'))closeModal()}
-function showBuyStep(){
-  document.getElementById('purchaseForm').style.display='block';
-  document.getElementById('keyEntryForm').style.display='none';
-  document.getElementById('successScreen').classList.remove('show');
-}
-function showKeyEntry(){
-  document.getElementById('purchaseForm').style.display='none';
-  document.getElementById('keyEntryForm').style.display='block';
-  document.getElementById('key-error').style.display='none';
-  document.getElementById('access-key-input').value='';
-  setTimeout(()=>document.getElementById('access-key-input').focus(),100);
-}
-function goPayPal(){
-  window.open('https://www.paypal.com/paypalme/PrinceGreen311/6','_blank');
-  // After PayPal opens, guide them to Discord
-  setTimeout(()=>{
-    window.open('https://discord.gg/nRyMWqDtba','_blank');
-  },1200);
-}
-
-async function verifyKey(){
-  const raw=document.getElementById('access-key-input').value.trim().toUpperCase();
-  const btn=document.getElementById('verify-btn');
-  const errEl=document.getElementById('key-error');
-  if(!raw){showKeyError('Please enter your access key.');return}
-
-  btn.textContent='Verifyingâ¦';btn.disabled=true;btn.style.opacity='0.6';
-  errEl.style.display='none';
-
-  try{
-    const data=await fbGet(`${FB_CODES_PATH}/${raw}`);
-
-    if(!data){
-      showKeyError('Invalid key. Check your Discord message and try again.');
-      btn.textContent='Verify Key & Unlock';btn.disabled=false;return;
-    }
-    if(data.used){
-      showKeyError('This key has already been used. Each key is single-use only.');
-      btn.textContent='Verify Key & Unlock';btn.disabled=false;return;
-    }
-    // Burn the key - mark as used with timestamp
-    await fbPatch(`${FB_CODES_PATH}/${raw}`,{used:true,usedAt:new Date().toISOString(),usedByAgent:navigator.userAgent.slice(0,80)});
-    // Store access in localStorage so it persists - buyer never needs to re-enter key
-    localStorage.setItem('pv_access','1');
-    // Show success
-    document.getElementById('keyEntryForm').style.display='none';
-    document.getElementById('successScreen').classList.add('show');
-  }catch(err){
-    showKeyError('Connection error. Please try again.');
-    btn.textContent='Verify Key & Unlock';btn.disabled=false;
-  }
-}
-
-function showKeyError(msg){
-  const el=document.getElementById('key-error');
-  el.textContent=msg;el.style.display='block';
-}
-function scrollToTrainer(){
- window.location.href='https://grandxwizard-svg.github.io/praisevision/trainer/';
-}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
-
-// Auto-unlock if already redeemed on this device
-document.addEventListener('DOMContentLoaded',()=>{
-  if(localStorage.getItem('pv_access')==='1'){
-    document.getElementById('successScreen').classList.add('show');
-  }
-});
-</script>
+<div id="pv-thankyou-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(2,9,23,.92);backdrop-filter:blur(16px);align-items:center;justify-content:center">
+  <div style="background:#0a0f2a;border:1px solid rgba(6,182,212,.4);border-radius:24px;padding:52px 44px;max-width:500px;width:90%;text-align:center;box-shadow:0 0 80px rgba(6,182,212,.2);position:relative;animation:modalPop .35s cubic-bezier(.34,1.56,.64,1)">
+    <button onclick="closePVThankyou()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:#64748b;font-size:1.3rem;cursor:pointer;line-height:1">✕</button>
+    <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#0e7490,#1d4ed8);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:2.4rem;box-shadow:0 0 40px rgba(6,182,212,.5);animation:modalPop .5s cubic-bezier(.34,1.56,.64,1)">👁️</div>
+    <div style="font-family:'Orbitron',monospace;font-size:9px;letter-spacing:4px;color:#06b6d4;text-transform:uppercase;margin-bottom:12px">Purchase Complete</div>
+    <h2 style="font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:16px;line-height:1.2">Thanks for buying<br><span style="background:linear-gradient(135deg,#67e8f9,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">PraiseVision!</span></h2>
+    <p style="color:#94a3b8;font-size:.88rem;line-height:1.75;margin-bottom:28px">Payment sent? Join our Discord, send your receipt, and you'll get a one-time access code to unlock PraiseVision.</p>
+    <div style="background:rgba(6,182,212,.08);border:1px solid rgba(6,182,212,.2);border-radius:12px;padding:20px 24px;margin-bottom:28px;text-align:left">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(6,182,212,.3);border:1px solid rgba(6,182,212,.5);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#67e8f9">1</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Join our Discord server</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(6,182,212,.3);border:1px solid rgba(6,182,212,.5);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#67e8f9">2</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Send your PayPal receipt + message: <span style="font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#06b6d4;background:rgba(6,182,212,.15);padding:2px 8px;border-radius:4px;letter-spacing:1px">PRAISEVISION</span></span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(6,182,212,.3);border:1px solid rgba(6,182,212,.5);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#67e8f9">3</div>
+          <span style="font-size:.85rem;color:#e2e8f0">You'll receive a one-time access code via DM</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="min-width:28px;height:28px;border-radius:50%;background:rgba(6,182,212,.3);border:1px solid rgba(6,182,212,.5);display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;color:#67e8f9">4</div>
+          <span style="font-size:.85rem;color:#e2e8f0">Enter your code at <a href="https://grandxwizard-svg.github.io/praisevision/" target="_blank" style="color:#06b6d4;text-decoration:none;font-weight:700">praisevision.tiiny.site</a></span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="https://discord.gg/nRyMWqDtba" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#5865f2,#4c1d95);color:#fff;text-decoration:none;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;padding:16px 28px;border-radius:10px;text-transform:uppercase;transition:all .2s;box-shadow:0 0 30px rgba(88,101,242,.35)" onmouseover="this.style.boxShadow='0 0 50px rgba(88,101,242,.6)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 0 30px rgba(88,101,242,.35)';this.style.transform='none'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.054a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Join Discord
+      </a>
+      <a href="https://grandxwizard-svg.github.io/praisevision/" target="_blank" style="display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0e7490,#1d4ed8);color:#fff;text-decoration:none;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:2px;padding:16px 28px;border-radius:10px;text-transform:uppercase;transition:all .2s;box-shadow:0 0 30px rgba(6,182,212,.35)" onmouseover="this.style.boxShadow='0 0 50px rgba(6,182,212,.6)';this.style.transform='translateY(-2px)'" onmouseout="this.style.boxShadow='0 0 30px rgba(6,182,212,.35)';this.style.transform='none'">
+        👁️ Enter Key
+      </a>
+    </div>
+    <p style="margin-top:20px;font-size:.72rem;color:#475569;letter-spacing:1px">You'll receive your code within minutes of verifying your receipt</p>
+  </div>
+</div>
 </body>
 </html>
